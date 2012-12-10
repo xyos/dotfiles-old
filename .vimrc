@@ -518,7 +518,7 @@ Bundle 'thinca/vim-poslist'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tsaleh/vim-align'
 Bundle 'tsaleh/vim-supertab'
-Bundle 'kogakure/vim-sparkup'
+Bundle 'mattn/zencoding-vim'
 Bundle 'Lokaltog/vim-powerline'
 filetype on
 " Section: Visual {{{1
