@@ -27,7 +27,10 @@ endtry
 " ----------------------
 "  Vim configurable Options
 "
+" numbers
 
+set relativenumber
+set number
 
 " editting
 set autochdir          " Changes dir to current editing
@@ -121,7 +124,7 @@ if v:version < 602 || $DISPLAY =~ '^localhost:' || $DISPLAY == ''
   set clipboard+=exclude:cons\\\|linux\\\|screen.*
   if $TERM =~ '^screen'
     set mouse=
-    colorscheme solarized
+    colorscheme molokai
   endif
 endif
 
@@ -494,7 +497,13 @@ endif " has("autocmd")
 " ---------------------
 filetype off
 Bundle 'gmarik/vundle'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'airblade/vim-gitgutter'
 Bundle 'BufClose.vim'
+Bundle 'bling/vim-airline'
+Bundle 'bling/vim-bufferline'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'terryma/vim-multiple-cursors'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-git'
@@ -518,8 +527,7 @@ Bundle 'thinca/vim-poslist'
 Bundle 'thinca/vim-quickrun'
 Bundle 'tsaleh/vim-align'
 Bundle 'tsaleh/vim-supertab'
-Bundle 'mattn/zencoding-vim'
-Bundle 'Lokaltog/vim-powerline'
+Bundle 'mattn/emmet-vim'
 filetype on
 " Section: Visual {{{1
 " --------------------
