@@ -1,28 +1,34 @@
 " turns off compatibility with old vi
-set nocompatible
 " configuring vim on first run
 " Section: Startup{{{1
+if has('vim_starting')
+  set nocompatible
+  let b:vim_path = expand("<sfile>:h") . "/.vim"
+  exe "set rtp+=" . b:vim_path
+  exe "set rtp+=" . b:vim_path . "/bundle/neobundle.vim/"
+  try
+    call neobundle#rc(expand(b:vim_path . "/bundle"))
+  catch
+    try
+      exe '!git clone https://github.com/Shougo/neobundle.git ' . shellescape(b:vim_path . "/bundle/neobundle.vim/")
+      source <sfile>
+      exe "set rtp+=" . b:vim_path . "/bundle/neobundle.vim/"
+      exe "NeoBundleInstall"
+    catch
+      let b:has_bundle = 0;
+    endtry
+  endtry
+  exec("set undodir=" . b:vim_path . "/undo")
+  exec("set backupdir=" . b:vim_path . "/backup")
+  exec("set directory=" . b:vim_path . "/tmp")
+endif
 " --------------------
 " Configures vim path to load files where the .vimrc is locate, it also checks
 " if vim is running for first time and tries to set up plugins using gmarik's
 " bundle plugin for vim.
 
 " `vim_path` current .vim dir on script directory
-let b:vim_path = expand("<sfile>:h") . "/.vim"
-exe "set rtp+=" . b:vim_path
-exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
-try
-  call vundle#rc(expand(b:vim_path . "/bundle"))
-catch
-  try
-    exe '!git clone https://github.com/gmarik/vundle.git ' . shellescape(b:vim_path . "/bundle/vundle/")
-    source <sfile>
-    exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
-    exe "BundleInstall"
-  catch
-    let b:has_bundle = 0;
-  endtry
-endtry
+set backupdir=~/.tmp
 " Section: Options  {{{1
 " ----------------------
 "  Vim configurable Options
@@ -48,11 +54,8 @@ set matchtime=5        " Time to show matching Bracket
 set undolevels=1000
 set updatecount=100
 set backup
-exec("set undodir=" . b:vim_path . "/undo")
-exec("set backupdir=" . b:vim_path . "/backup")
-exec("set directory=" . b:vim_path . "/tmp")
 filetype plugin indent on
-set clipboard+=unnamed " Yanking to system clipboard
+set clipboard=unnamed  " Yanking to system clipboard
 set ttyfast            " Faster drawing
 set hidden             " Lets you send buffers to backgrund whitout saving them
 set history=1000       " Size of history file
@@ -119,14 +122,6 @@ if v:version >= 600
   set mouse=nvi
 endif
 
-if v:version < 602 || $DISPLAY =~ '^localhost:' || $DISPLAY == ''
-  set clipboard-=exclude:cons\\\|linux
-  set clipboard+=exclude:cons\\\|linux\\\|screen.*
-  if $TERM =~ '^screen'
-    set mouse=
-    colorscheme molokai
-  endif
-endif
 
 if !has("gui_running") && $DISPLAY == '' || !has("gui")
   set mouse=
@@ -225,26 +220,30 @@ nnoremap gW :OpenURL http://en.wikipedia.org/wiki/Special:Search?search=<cword><
 
 " Section: Mappings {{{1
 " ----------------------
+" plugins
+nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
+nnoremap <leader>/ :Unite grep:.<CR>
+let g:unite_source_history_yank_enable = 1
+nnoremap <leader>y :Unite history/yank<CR>
+nnoremap <leader>b :Unite -quick-match buffer<CR>
+
+" ------
 " Leader
 let mapleader = ","
 let maplocalleader = ","
 " ------
-" ctrlp pluggin
-nmap <silent> <leader>b :CtrlPBuffer<CR>
-nmap <silent> <leader>u :CtrlPMRU<CR>
-" -------
-nnoremap Q :<C-U>q<CR>
 nnoremap Y y$
+" Remove highligh search
 if exists(":hohls")
   nmap <silent> <leader>/ :nohls<CR>
 endif
+" ------
 inoremap <C-C> <Esc>`^
+" jj to esc and smarter k and j
 nnoremap j gj
 nnoremap k gk
 inoremap jj <ESC>
-" split the lines from cursor to the EOL, sending the second part to the line
-" to the top of the current line
-nnoremap zS r<CR>ddkP=j
+" ------
 " indents on paste
 nnoremap =p m`=ap``
 nnoremap == ==
@@ -256,16 +255,6 @@ vnoremap <Space> I<Space><Esc>gv
 " " -*- vim -*- vim:set ft=vim et sw=2 sts=2:
 inoremap <C-X>^ <C-R>=substitute(&commentstring,' \=%s\>'," -*- ".&ft." -*- vim:set ft=".&ft." ".(&et?"et":"noet")." sw=".&sw." sts=".&sts.':','')<CR>
 
-" keys on insert mode and command mode
-inoremap <M-h> <Left>
-inoremap <M-l> <right>
-inoremap <M-j> <up>
-inoremap <M-k> <down>
-cnoremap <M-h> <Left>
-cnoremap <M-l> <right>
-cnoremap <M-j> <up>
-cnoremap <M-k> <down>
-" ------------------
 " Common motions on insert and command mode
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
@@ -285,43 +274,13 @@ inoremap <down>  <nop>
 inoremap <left>  <nop>
 inoremap <right> <nop>
 "-----------------------
-if has("eval")
-  command! -buffer -bar -range -nargs=? Slide :exe 'norm m`'|exe '<line1>,<line2>move'.((<q-args> < 0 ? <line1>-1 : <line2>)+(<q-args>=='' ? 1 : <q-args>))|exe 'norm ``'
-endif
-" If at end of a line of spaces, delete back to the previous line.
-" Otherwise, <Left>
-inoremap <silent> <C-B> <C-R>=getline('.')=~'^\s*$'&&col('.')>strlen(getline('.'))?"0\<Lt>C-D>\<Lt>Esc>kJs":"\<Lt>Left>"<CR>
-cnoremap <C-B> <Left>
-" If at end of line, decrease indent, else <Del>
-inoremap <silent> <C-D> <C-R>=col('.')>strlen(getline('.'))?"\<Lt>C-D>":"\<Lt>Del>"<CR>
-cnoremap <C-D> <Del>
-" If at end of line, fix indent, else <Right>
-inoremap <silent> <C-F> <C-R>=col('.')>strlen(getline('.'))?"\<Lt>C-F>":"\<Lt>Right>"<CR>
-if !has("gui_running")
-  silent! exe "set <S-Left>=\<Esc>b"
-  silent! exe "set <S-Right>=\<Esc>f"
-  silent! exe "set <F31>=\<Esc>d"
-  map! <F31> <M-d>
-endif
-
 map <F1> <Esc>
 map! <F1> <Esc>
-if has("gui_running")
-  map <F2> :Fancy<CR>
-endif
 map <F3> :cnext<CR>
 map <F4> :cc<CR>
 map <F5> :cprev<CR>
-nmap <silent> <F6> :if &previewwindow<Bar>pclose<Bar>elseif exists(':Gstatus')<Bar>exe 'Gstatus'<Bar>else<Bar>ls<Bar>endif<CR>
-nmap <silent> <F7> :if exists(':Glcd')<Bar>exe 'Glcd'<Bar>elseif exists(':Rlcd')<Bar>exe 'Rlcd'<Bar>else<Bar>lcd %:h<Bar>endif<CR>
-map <F8> :wa<Bar>make<CR>
-map <silent> <F11> :if exists(":BufExplorer")<Bar>exe "BufExplorer"<Bar>else<Bar>buffers<Bar>endif<CR>
 map <C-F4> :bdelete<CR>
-noremap <S-Insert> <MiddleMouse>
-noremap! <S-Insert> <MiddleMouse>
 map <Leader>l <Plug>CapsLockToggle
-nmap du <Plug>SpeedDatingNowUTC
-nmap dx <Plug>SpeedDatingNowLocal
 inoremap <silent> <C-G><C-T> <C-R>=repeat(complete(col('.'),map(["%Y-%m-%d %H:%M:%S","%a, %d %b %Y %H:%M:%S %z","%Y %b %d","%d-%b-%y","%a %b %d %T %Z %Y"],'strftime(v:val)')+[localtime()]),0)<CR>
 " Merge consecutive empty lines and clean up trailing whitespace
 map <Leader>fm :g/^\s*$/,/\S/-j<Bar>%s/\s\+$//<CR>
@@ -346,65 +305,6 @@ autocmd FileType php noremap H F$l
 " --------------------------
 
 if has("autocmd")
-  if $HOME !~# '^/Users/'
-    filetype off " Debian preloads this before the runtimepath is set
-  endif
-  if version>600
-    filetype plugin indent on
-  else
-    filetype on
-  endif
-  augroup FTMisc " {{{2
-    autocmd!
-
-    autocmd FocusLost * silent! wall
-    autocmd BufNewFile,BufReadPost *.coffee setl sw=2 expandtab
-    autocmd FocusGained * if !has('win32') | silent! call fugitive#reload_status() | endif
-    autocmd SourcePre */macros/less.vim set laststatus=0 cmdheight=1
-    if v:version >= 700 && isdirectory(expand("~/.trash"))
-      autocmd BufWritePre,BufWritePost * if exists("s:backupdir") | set backupext=~ | let &backupdir = s:backupdir | unlet s:backupdir | endif
-      autocmd BufWritePre ~/*
-            \ let s:path = expand("~/.trash").strpart(expand("<afile>:p:~:h"),1) |
-            \ if !isdirectory(s:path) | call mkdir(s:path,"p") | endif |
-            \ let s:backupdir = &backupdir |
-            \ let &backupdir = escape(s:path,'\,').','.&backupdir |
-            \ let &backupext = strftime(".%Y%m%d%H%M%S~",getftime(expand("<afile>:p")))
-    endif
-
-    autocmd User Rails-javascript setlocal ts=2
-    autocmd User Fugitive if filereadable(fugitive#buffer().repo().dir('fugitive.vim')) | source `=fugitive#buffer().repo().dir('fugitive.vim')` | endif
-
-    autocmd BufNewFile */init.d/*
-          \ if filereadable("/etc/init.d/skeleton") |
-          \ 0r /etc/init.d/skeleton |
-          \ $delete |
-          \ silent! execute "%s/\\$\\(Id\\):[^$]*\\$/$\\1$/eg" |
-          \ endif |
-          \ set ft=sh | 1
-
-    autocmd BufNewFile */.netrc,*/.fetchmailrc,*/.my.cnf let b:chmod_new="go-rwx"
-    autocmd BufNewFile * let b:chmod_exe=1
-    autocmd BufWritePre * if exists("b:chmod_exe") |
-          \ unlet b:chmod_exe |
-          \ if getline(1) =~ '^#!' | let b:chmod_new="+x" | endif |
-          \ endif
-    autocmd BufWritePost,FileWritePost * if exists("b:chmod_new")|
-          \ silent! execute "!chmod ".b:chmod_new." <afile>"|
-          \ unlet b:chmod_new|
-          \ endif
-
-    autocmd BufWritePost,FileWritePost ~/.Xdefaults,~/.Xresources silent! !xrdb -load % >/dev/null 2>&1
-    autocmd BufWritePre,FileWritePre /etc/* if &ft == "dns" |
-          \ exe "normal msHmt" |
-          \ exe "gl/^\\s*\\d\\+\\s*;\\s*Serial$/normal ^\<C-A>" |
-          \ exe "normal g`tztg`s" |
-          \ endif
-    autocmd BufReadPre *.pdf setlocal binary
-    autocmd BufReadCmd *.jar call zip#Browse(expand("<amatch>"))
-    autocmd FileReadCmd *.doc execute "read! antiword \"<afile>\""
-    autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
-      \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
-  augroup END " }}}2
   augroup FTCheck " {{{2
     autocmd!
     autocmd BufNewFile,BufRead */apache2/[ms]*-*/* set ft=apache
@@ -416,12 +316,6 @@ if has("autocmd")
     autocmd BufNewFile,BufRead /var/www/*
           \ let b:url=expand("<afile>:s?^/var/www/?http://localhost/?")
     autocmd BufNewFile,BufRead /etc/udev/*.rules set ft=udev
-" autocmd BufNewFile,BufRead,StdinReadPost *
-" \ if !did_filetype() && (getline(1) =~ '^!!\@!'
-" \ || getline(2) =~ '^!!\@!' || getline(3) =~ '^!'
-" \ || getline(4) =~ '^!' || getline(5) =~ '^!') |
-" \ setf router |
-" \ endif
     autocmd BufRead * if ! did_filetype() && getline(1)." ".getline(2).
           \ " ".getline(3) =~? '<\%(!DOCTYPE \)\=html\>' | setf html | endif
     autocmd BufNewFile,BufRead *.txt,README,INSTALL,NEWS,TODO if &ft == ""|set ft=text|endif
@@ -496,38 +390,47 @@ endif " has("autocmd")
 " Section: Bundles {{{1
 " ---------------------
 filetype off
-Bundle 'gmarik/vundle'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'BufClose.vim'
-Bundle 'bling/vim-airline'
-Bundle 'bling/vim-bufferline'
-Bundle 'davidhalter/jedi-vim'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-git'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-abolish'
-Bundle 'groenewege/vim-less'
-Bundle 'kien/ctrlp.vim'
-Bundle 'L9'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'nginx.vim'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'Raimondi/delimitMate'
-Bundle 'edsono/vim-matchit'
-Bundle 'msanders/snipmate.vim'
-Bundle 'othree/javascript-syntax.vim'
-Bundle 'pangloss/vim-javascript'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'sjl/gundo.vim'
-Bundle 'thinca/vim-poslist'
-Bundle 'thinca/vim-quickrun'
-Bundle 'tsaleh/vim-align'
-Bundle 'tsaleh/vim-supertab'
-Bundle 'mattn/emmet-vim'
+NeoBundleFetch 'Shougo/neobundle.vim'
+NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'windows' : 'make -f make_mingw32.mak',
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
+NeoBundle 'BufClose.vim'
+NeoBundle 'L9'
+NeoBundle 'Floobits'
+NeoBundle 'Raimondi/delimitMate'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'bling/vim-airline'
+NeoBundle 'bling/vim-bufferline'
+NeoBundle 'davidhalter/jedi-vim'
+NeoBundle 'digitaltoad/vim-jade'
+NeoBundle 'edsono/vim-matchit'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'jelera/vim-javascript-syntax'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'mattn/emmet-vim'
+NeoBundle 'msanders/snipmate.vim'
+NeoBundle 'nginx.vim'
+NeoBundle 'othree/javascript-syntax.vim'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'sjl/gundo.vim'
+NeoBundle 'terryma/vim-multiple-cursors'
+NeoBundle 'thinca/vim-poslist'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'tpope/vim-abolish'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-git'
+NeoBundle 'tpope/vim-repeat'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tsaleh/vim-align'
+NeoBundle 'tsaleh/vim-supertab'
 filetype on
 " Section: Visual {{{1
 " --------------------
