@@ -10,7 +10,7 @@ if has('vim_starting')
     call neobundle#rc(expand(b:vim_path . "/bundle"))
   catch
     try
-      exe '!git clone https://github.com/Shougo/neobundle.git ' . shellescape(b:vim_path . "/bundle/neobundle.vim/")
+      exe '!git clone https://github.com/Shougo/neobundle.vim.git ' . shellescape(b:vim_path . "/bundle/neobundle.vim/")
       source <sfile>
       exe "set rtp+=" . b:vim_path . "/bundle/neobundle.vim/"
       exe "NeoBundleInstall"
@@ -28,11 +28,19 @@ endif
 " bundle plugin for vim.
 
 " `vim_path` current .vim dir on script directory
-set backupdir=~/.tmp
 " Section: Options  {{{1
 " ----------------------
-"  Vim configurable Options
+" Vim configurable Options
 "
+" tmux
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
+
 " numbers
 
 set relativenumber
@@ -51,6 +59,20 @@ set showmatch          " Shows matching Bracket, parenthesis, etc...
 set smartcase          " Matchs uppercase on search
 set matchtime=5        " Time to show matching Bracket
 " other options
+set ttimeout
+set ttimeoutlen=50
+set complete-=i        " no autocomplete for includes (faster vim)
+set display+=lastline
+if !&scrolloff
+  set scrolloff=5
+endif
+if !&sidescrolloff
+  set sidescrolloff=5
+endif
+if &t_Co == 8 && $TERM !~# '^linux'
+  set t_Co=16
+endif
+set nrformats-=octal   " no octal on numbers starting with 0
 set undolevels=1000
 set updatecount=100
 set backup
@@ -175,47 +197,6 @@ command! -bar -nargs=* -bang -complete=file Rename :
       \ endif
 " `:Invert`     toggles the background dark/light
 command! -bar Invert :let &background = (&background=="light"?"dark":"light")
-" `:Fancy`      shows ruler and foldcolumn
-function! Fancy()
-  if &number
-    if has("gui_running")
-      let &columns=&columns-12
-    endif
-    windo set nonumber foldcolumn=0
-    if exists("+cursorcolumn")
-      set nocursorcolumn nocursorline
-    endif
-  else
-    if has("gui_running")
-      let &columns=&columns+12
-    endif
-    windo set number foldcolumn=4
-    if exists("+cursorcolumn")
-      set cursorline
-    endif
-  endif
-endfunction
-command! -bar Fancy :call Fancy()
-" `:OpenURL string` opens string url in a browser
-function! OpenURL(url)
-  if has("win32") || has("win64")
-    exe "!start cmd /cstart /b ".a:url.""
-  elseif $DISPLAY !~ '^\w'
-    exe "silent !sensible-browser \"".a:url."\""
-  else
-    exe "silent !sensible-browser -T \"".a:url."\""
-  endif
-  redraw!
-endfunction
-command! -nargs=1 OpenURL :call OpenURL(<q-args>)
-" `gb` opens url/word under cursor on browser
-nnoremap gb :OpenURL <cfile><CR>
-" `gA` opens url/word under cursor on Answers dictionary
-nnoremap gA :OpenURL http://www.answers.com/<cword><CR>
-" `gG` opens url/word under cursor on google
-nnoremap gG :OpenURL http://www.google.com/search?q=<cword><CR>
-" `gW` opens url/word under cursor on wikipedia
-nnoremap gW :OpenURL http://en.wikipedia.org/wiki/Special:Search?search=<cword><CR>
 
 
 " Section: Mappings {{{1
@@ -401,7 +382,6 @@ NeoBundle 'Shougo/vimproc', {
       \ }
 NeoBundle 'BufClose.vim'
 NeoBundle 'L9'
-NeoBundle 'Floobits'
 NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'airblade/vim-gitgutter'
@@ -434,50 +414,7 @@ NeoBundle 'tsaleh/vim-supertab'
 filetype on
 " Section: Visual {{{1
 " --------------------
-
-" Switch syntax highlighting on, when the terminal has colors
-if (&t_Co > 2 || has("gui_running")) && has("syntax")
-  colorscheme molokai
-  function! s:initialize_font()
-    if exists("&guifont")
-      if has("mac")
-        set guifont=Monaco:h12
-      elseif has("unix")
-        if &guifont == ""
-          set guifont=bitstream\ vera\ sans\ mono\ 11
-        endif
-      elseif has("win32")
-        set guifont=DejaVu_Sans_Mono_for_Powerline:h10,Dejavu_Sans_Mono:h11,Courier\ New:h10
-      endif
-    endif
-  endfunction
-
-  command! -bar -nargs=0 Bigger :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)+1','')
-  command! -bar -nargs=0 Smaller :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)-1','')
-  noremap <M-,> :Smaller<CR>
-  noremap <M-.> :Bigger<CR>
-
-  if exists("syntax_on") || exists("syntax_manual")
-  else
-    syntax on
-  endif
-  set list
-
-  augroup RCVisual
-    autocmd!
-
-    autocmd VimEnter * if !has("gui_running") | set background=dark notitle noicon | endif
-    autocmd GUIEnter * set background=light title icon cmdheight=2 lines=25 columns=80 guioptions-=T
-    autocmd GUIEnter * if has("diff") && &diff | set columns=165 | endif
-    autocmd GUIEnter * silent! colorscheme molokai
-    autocmd GUIEnter * call s:initialize_font()
-    autocmd GUIEnter * let $GIT_EDITOR = 'false'
-    autocmd Syntax css syn sync minlines=50
-    autocmd Syntax csh hi link cshBckQuote Special | hi link cshExtVar PreProc | hi link cshSubst PreProc | hi link cshSetVariables Identifier
-  augroup END
-endif
-
-" }}}1
+" }}}
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
