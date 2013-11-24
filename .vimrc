@@ -156,6 +156,15 @@ if $TERM =~ '^screen'
   if $TERM == 'screen-bce' && &t_Co == 8
     set t_Co=256
   endif
+  if $TERM == 'screen-256color'
+    set t_Co=256
+    set background=dark
+    " solarized options 
+    let g:solarized_termcolors = 256
+    let g:solarized_visibility = "normal"
+    let g:solarized_contrast = "normal"
+    colorscheme solarized
+  endif
   if $TERM != 'screen.linux' && &t_Co == 8
     set t_Co=256
   endif
@@ -202,12 +211,8 @@ command! -bar Invert :let &background = (&background=="light"?"dark":"light")
 " Section: Mappings {{{1
 " ----------------------
 " plugins
-nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
-nnoremap <leader>/ :Unite grep:.<CR>
-let g:unite_source_history_yank_enable = 1
-nnoremap <leader>y :Unite history/yank<CR>
-nnoremap <leader>b :Unite -quick-match buffer<CR>
-
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_working_path_mode = 'ra'
 " ------
 " Leader
 let mapleader = ","
@@ -372,20 +377,12 @@ endif " has("autocmd")
 " ---------------------
 filetype off
 NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \     'windows' : 'make -f make_mingw32.mak',
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac' : 'make -f make_mac.mak',
-      \     'unix' : 'make -f make_unix.mak',
-      \    },
-      \ }
-NeoBundle 'BufClose.vim'
-NeoBundle 'L9'
 NeoBundle 'Raimondi/delimitMate'
-NeoBundle 'Shougo/unite.vim'
+NeoBundle 'kien/ctrlp.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'walm/jshint.vim'
+NeoBundle 'walm/jshint.vim'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'bling/vim-bufferline'
 NeoBundle 'davidhalter/jedi-vim'
@@ -393,6 +390,7 @@ NeoBundle 'digitaltoad/vim-jade'
 NeoBundle 'edsono/vim-matchit'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'jelera/vim-javascript-syntax'
+NeoBundle 'junegunn/vim-easy-align'
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'msanders/snipmate.vim'
@@ -400,6 +398,7 @@ NeoBundle 'nginx.vim'
 NeoBundle 'othree/javascript-syntax.vim'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'scrooloose/syntastic'
 NeoBundle 'sjl/gundo.vim'
 NeoBundle 'terryma/vim-multiple-cursors'
 NeoBundle 'thinca/vim-poslist'
@@ -409,7 +408,6 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'tsaleh/vim-align'
 NeoBundle 'tsaleh/vim-supertab'
 filetype on
 " Section: Visual {{{1
