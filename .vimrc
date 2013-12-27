@@ -159,7 +159,7 @@ if $TERM =~ '^screen'
   if $TERM == 'screen-256color'
     set t_Co=256
     set background=dark
-    " solarized options 
+    " solarized options
     let g:solarized_termcolors = 256
     let g:solarized_visibility = "normal"
     let g:solarized_contrast = "normal"
@@ -412,6 +412,20 @@ NeoBundle 'tsaleh/vim-supertab'
 filetype on
 " Section: Visual {{{1
 " --------------------
+if has('win32')
+  colorscheme xoria256
+  if has('gui')
+    set guioptions-=e
+    set guioptions-=m
+    set guioptions-=g
+    set guioptions-=r
+    set guioptions-=L
+    set guioptions-=t
+    set guioptions-=T
+    set guifont=Source_Code_Pro:h10:cANSI
+    colorscheme molokai
+  endif
+endif
 " }}}
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
