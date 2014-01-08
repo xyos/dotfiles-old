@@ -5,14 +5,14 @@ if has('vim_starting')
   set nocompatible
   let b:vim_path = expand("<sfile>:h") . "/.vim"
   exe "set rtp+=" . b:vim_path
-  exe "set rtp+=" . b:vim_path . "/bundle/neobundle.vim/"
+  exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
   try
-    call neobundle#rc(expand(b:vim_path . "/bundle"))
+    call vundle#rc(expand(b:vim_path . "/bundle"))
   catch
     try
-      exe '!git clone https://github.com/Shougo/neobundle.vim.git ' . shellescape(b:vim_path . "/bundle/neobundle.vim/")
+      exe '!git clone https://github.com/gmarik/vundle.git ' . shellescape(b:vim_path . "/bundle/vundle/")
       source <sfile>
-      exe "set rtp+=" . b:vim_path . "/bundle/neobundle.vim/"
+      exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
       exe "NeoBundleInstall"
     catch
       let b:has_bundle = 0;
@@ -376,42 +376,41 @@ endif " has("autocmd")
 " Section: Bundles {{{1
 " ---------------------
 filetype off
-NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'Raimondi/delimitMate'
-NeoBundle 'kien/ctrlp.vim'
-NeoBundle 'airblade/vim-gitgutter'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'walm/jshint.vim'
-NeoBundle 'lukerandall/haskellmode-vim'
-NeoBundle 'eagletmt/ghcmod-vim'
-NeoBundle 'eagletmt/neco-ghc'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'bling/vim-airline'
-NeoBundle 'bling/vim-bufferline'
-NeoBundle 'davidhalter/jedi-vim'
-NeoBundle 'digitaltoad/vim-jade'
-NeoBundle 'edsono/vim-matchit'
-NeoBundle 'groenewege/vim-less'
-NeoBundle 'jelera/vim-javascript-syntax'
-NeoBundle 'junegunn/vim-easy-align'
-NeoBundle 'kchmck/vim-coffee-script'
-NeoBundle 'mattn/emmet-vim'
-NeoBundle 'msanders/snipmate.vim'
-NeoBundle 'nginx.vim'
-NeoBundle 'othree/javascript-syntax.vim'
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'scrooloose/nerdcommenter'
-NeoBundle 'scrooloose/syntastic'
-NeoBundle 'sjl/gundo.vim'
-NeoBundle 'terryma/vim-multiple-cursors'
-NeoBundle 'thinca/vim-poslist'
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'tpope/vim-abolish'
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'tpope/vim-git'
-NeoBundle 'tpope/vim-repeat'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tsaleh/vim-supertab'
+Bundle 'Raimondi/delimitMate'
+Bundle 'kien/ctrlp.vim'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'walm/jshint.vim'
+Bundle 'lukerandall/haskellmode-vim'
+Bundle 'eagletmt/ghcmod-vim'
+Bundle 'eagletmt/neco-ghc'
+Bundle 'Shougo/neocomplcache'
+Bundle 'bling/vim-airline'
+Bundle 'bling/vim-bufferline'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'edsono/vim-matchit'
+Bundle 'groenewege/vim-less'
+Bundle 'jelera/vim-javascript-syntax'
+Bundle 'junegunn/vim-easy-align'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'mattn/emmet-vim'
+Bundle 'msanders/snipmate.vim'
+Bundle 'nginx.vim'
+Bundle 'othree/javascript-syntax.vim'
+Bundle 'pangloss/vim-javascript'
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/syntastic'
+Bundle 'sjl/gundo.vim'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'thinca/vim-poslist'
+Bundle 'thinca/vim-quickrun'
+Bundle 'tpope/vim-abolish'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-git'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-surround'
+Bundle 'tsaleh/vim-supertab'
 filetype on
 " Section: Visual {{{1
 " --------------------
@@ -428,6 +427,9 @@ if has('win32')
     set guifont=Source_Code_Pro:h10:cANSI
     colorscheme molokai
   endif
+endif
+if has('unix')
+  set shell=/bin/bash
 endif
 " }}}
 if filereadable(expand("~/.vimrc.local"))
