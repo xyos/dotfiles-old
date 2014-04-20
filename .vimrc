@@ -15,7 +15,7 @@ if has('vim_starting')
       exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
       exe "NeoBundleInstall"
     catch
-      let b:has_bundle = 0;
+      let b:has_bundle = 0
     endtry
   endtry
   exec("set undodir=" . b:vim_path . "/undo")
@@ -376,6 +376,7 @@ endif " has("autocmd")
 " Section: Bundles {{{1
 " ---------------------
 filetype off
+Bundle 'vundle'
 Bundle 'Raimondi/delimitMate'
 Bundle 'kien/ctrlp.vim'
 Bundle 'airblade/vim-gitgutter'
@@ -400,6 +401,7 @@ Bundle 'nginx.vim'
 Bundle 'othree/javascript-syntax.vim'
 Bundle 'pangloss/vim-javascript'
 Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'sjl/gundo.vim'
 Bundle 'terryma/vim-multiple-cursors'
@@ -412,6 +414,11 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'tsaleh/vim-supertab'
 filetype on
+" Section: BundleOptions {{{1
+" ---------------------
+" Section: Bundles {{{1
+" ---------------------
+let g:airline#extensions#tabline#enabled = 1
 " Section: Visual {{{1
 " --------------------
 if has('win32')
