@@ -416,9 +416,11 @@ Bundle 'tsaleh/vim-supertab'
 filetype on
 " Section: BundleOptions {{{1
 " ---------------------
+if exists(':AirlineRefresh')
+  let g:airline#extensions#tabline#enabled = 1
+endif
 " Section: Bundles {{{1
 " ---------------------
-let g:airline#extensions#tabline#enabled = 1
 " Section: Visual {{{1
 " --------------------
 if has('win32')
