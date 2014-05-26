@@ -1,6 +1,23 @@
-" turns off compatibility with old vi
 " configuring vim on first run
-" Section: Startup{{{1
+" Section: Startup{{{
+" -----------------
+" OS Detection
+silent function! OSX()
+  return has('macunix')
+endfunction
+silent function! LINUX()
+  return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WINDOWS()
+  return  (has('win16') || has('win32') || has('win64'))
+endfunction
+" -----------------
+" --------------------
+" Configures vim path to load files where the .vimrc is locate, it also checks
+" if vim is running for first time and tries to set up plugins using gmarik's
+" bundle plugin for vim.
+" `vim_path` current .vim dir on script directory
+" --------------------
 if has('vim_starting')
   set nocompatible
   let b:vim_path = expand("<sfile>:h") . "/.vim"
@@ -13,7 +30,7 @@ if has('vim_starting')
       exe '!git clone https://github.com/gmarik/vundle.git ' . shellescape(b:vim_path . "/bundle/vundle/")
       source <sfile>
       exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
-      exe "NeoBundleInstall"
+      exe "BundleInstall"
     catch
       let b:has_bundle = 0
     endtry
@@ -23,12 +40,8 @@ if has('vim_starting')
   exec("set directory=" . b:vim_path . "/tmp")
 endif
 " --------------------
-" Configures vim path to load files where the .vimrc is locate, it also checks
-" if vim is running for first time and tries to set up plugins using gmarik's
-" bundle plugin for vim.
-
-" `vim_path` current .vim dir on script directory
-" Section: Options  {{{1
+" }}}
+" Section: Options  {{{
 " ----------------------
 " Vim configurable Options
 "
@@ -144,7 +157,6 @@ if v:version >= 600
   set mouse=nvi
 endif
 
-
 if !has("gui_running") && $DISPLAY == '' || !has("gui")
   set mouse=
 endif
@@ -156,7 +168,7 @@ if $TERM =~ '^screen'
   if $TERM == 'screen-bce' && &t_Co == 8
     set t_Co=256
   endif
-  if $TERM == 'screen-256color'
+  if $TERM == 'screen-256color' || $TERM == 'xterm'
     set t_Co=256
     set background=dark
     " solarized options
@@ -193,10 +205,6 @@ endif
 command! -bar -nargs=0 SudoW :setl nomod|silent exe 'write !sudo tee % >/dev/null'|let &mod = v:shell_error
 " `:W`          fixes W typo
 command! -bar -nargs=* -bang W :write<bang> <args>
-" `:Scratch`    opens a scratch buffer
-command! -bar -nargs=0 -bang Scratch :silent edit<bang> \[Scratch]|set buftype=nofile bufhidden=hide noswapfile buflisted
-" `:RFC Number` opens the specified RFC number
-command! -bar -count=0 RFC :e http://www.ietf.org/rfc/rfc<count>.txt|setl ro noma
 " `:Rename xxx` renames current file to xxx
 command! -bar -nargs=* -bang -complete=file Rename :
       \ let v:errmsg = ""|
@@ -378,23 +386,22 @@ endif " has("autocmd")
 filetype off
 Bundle 'vundle'
 Bundle 'Raimondi/delimitMate'
-Bundle 'kien/ctrlp.vim'
+Bundle 'Shougo/neocomplcache'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'walm/jshint.vim'
-Bundle 'lukerandall/haskellmode-vim'
-Bundle 'eagletmt/ghcmod-vim'
-Bundle 'eagletmt/neco-ghc'
-Bundle 'Shougo/neocomplcache'
 Bundle 'bling/vim-airline'
 Bundle 'bling/vim-bufferline'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'digitaltoad/vim-jade'
+Bundle 'eagletmt/ghcmod-vim'
+Bundle 'eagletmt/neco-ghc'
 Bundle 'edsono/vim-matchit'
 Bundle 'groenewege/vim-less'
 Bundle 'jelera/vim-javascript-syntax'
 Bundle 'junegunn/vim-easy-align'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'kien/ctrlp.vim'
+Bundle 'lukerandall/haskellmode-vim'
 Bundle 'mattn/emmet-vim'
 Bundle 'msanders/snipmate.vim'
 Bundle 'nginx.vim'
@@ -411,8 +418,10 @@ Bundle 'tpope/vim-abolish'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-git'
 Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-surround'
 Bundle 'tsaleh/vim-supertab'
+Bundle 'walm/jshint.vim'
 filetype on
 " Section: BundleOptions {{{1
 " ---------------------
