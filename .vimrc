@@ -1,4 +1,5 @@
-" configuring vim on first run
+" vim != vi
+set nocompatible
 " Section: Startup{{{
 " -----------------
 " OS Detection
@@ -19,28 +20,70 @@ endfunction
 " `vim_path` current .vim dir on script directory
 " --------------------
 if has('vim_starting')
-  set nocompatible
+  filetype off
   let b:vim_path = expand("<sfile>:h") . "/.vim"
   exe "set rtp+=" . b:vim_path
-  exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
+  exe "set rtp+=" . b:vim_path . "/bundle/Vundle.vim/"
   try
-    call vundle#rc(expand(b:vim_path . "/bundle"))
+    call vundle#begin(expand(b:vim_path . "/bundle"))
   catch
     try
-      exe '!git clone https://github.com/gmarik/vundle.git ' . shellescape(b:vim_path . "/bundle/vundle/")
+      exe '!git clone https://github.com/gmarik/Vundle.vim.git ' . shellescape(b:vim_path . "/bundle/Vundle.vim/")
       source <sfile>
-      exe "set rtp+=" . b:vim_path . "/bundle/vundle/"
-      exe "BundleInstall"
+      exe "set rtp+=" . b:vim_path . "/bundle/Vundle.vim/"
+      call vundle#begin(expand(b:vim_path . "/bundle"))
+      exe "PluginInstall"
     catch
       let b:has_bundle = 0
     endtry
   endtry
-  exec("set undodir=" . b:vim_path . "/undo")
-  exec("set backupdir=" . b:vim_path . "/backup")
-  exec("set directory=" . b:vim_path . "/tmp")
+  exec("set undodir=" . expand("<sfile>:h" . "/.vim/undo"))
+  exec("set backupdir=" . expand("<sfile>:h" . "/.vim/backup"))
+  exec("set directory=" . expand("<sfile>:h" . "/.vim/tmp"))
 endif
 " --------------------
 " }}}
+" Section: Bundles {{{1
+" ---------------------
+Plugin 'gmarik/Vundle.vim'
+Plugin 'Raimondi/delimitMate'
+Plugin 'Shougo/neocomplcache'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'bling/vim-airline'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'eagletmt/ghcmod-vim'
+Plugin 'eagletmt/neco-ghc'
+Plugin 'edsono/vim-matchit'
+Plugin 'groenewege/vim-less'
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'kien/ctrlp.vim'
+Plugin 'lukerandall/haskellmode-vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'msanders/snipmate.vim'
+Plugin 'nginx.vim'
+Plugin 'othree/javascript-syntax.vim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'sjl/gundo.vim'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'thinca/vim-poslist'
+Plugin 'thinca/vim-quickrun'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-git'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-sleuth'
+Plugin 'tpope/vim-surround'
+Plugin 'tsaleh/vim-supertab'
+Plugin 'walm/jshint.vim'
+call vundle#end()
+filetype on
 " Section: Options  {{{
 " ----------------------
 " Vim configurable Options
@@ -65,6 +108,7 @@ set cindent            " ident with spaces
 set smarttab           " Insert spaces when indenting with tab
 set smartindent        " Smart ident depending on the language
 set autoindent         " Autoindent on new line
+set mousehide          " Hide Cursor while typing
 " search
 set hlsearch           " Highlights search
 set incsearch          " Shows search matches as you type
@@ -92,6 +136,9 @@ set backup
 filetype plugin indent on
 set clipboard=unnamed  " Yanking to system clipboard
 set ttyfast            " Faster drawing
+set cursorline         " CursorLine
+set ruler
+set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
 set hidden             " Lets you send buffers to backgrund whitout saving them
 set history=1000       " Size of history file
 set undolevels=1000    " Size of undo history file
@@ -135,7 +182,7 @@ if has("eval")
   let &fileencodings = substitute(&fileencodings,"latin1","cp1252","")
   let &highlight = substitute(&highlight,'NonText','SpecialKey','g')
 endif
-if (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8') && version >= 700
+if (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8' ) && version >= 700
   let &listchars = "tab:\u21e5\u00b7,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u26ad"
 else
   set listchars=tab:>\ ,trail:-,extends:>,precedes:<
@@ -329,11 +376,7 @@ if has("autocmd")
     autocmd FileType eruby,yaml,ruby setlocal ai et sta sw=2 sts=2
     autocmd FileType cucumber setlocal ai et sta sw=2 sts=2 ts=2
     autocmd FileType text,txt,mail setlocal ai com=fb:*,fb:-,n:>
-    autocmd FileType sh,zsh,csh,tcsh inoremap <silent> <buffer> <C-X>! #!/bin/<C-R>=&ft<CR>
-    autocmd FileType perl,python,ruby inoremap <silent> <buffer> <C-X>! #!/usr/bin/<C-R>=&ft<CR>
-    autocmd FileType sh,zsh,csh,tcsh,perl,python,ruby imap <buffer> <C-X>& <C-X>!<Esc>o <C-U># $I<C-V>d$<Esc>o <C-U><C-X>^<Esc>o <C-U><C-G>u
     autocmd FileType c,cpp,cs,java,perl,javscript,php,aspperl,tex,css let b:surround_101 = "\r\n}"
-    autocmd User ragtag if &sw == 8 | setlocal sw=2 sts=2 ts=2 | endif
     autocmd FileType apache setlocal commentstring=#\ %s
     autocmd FileType aspvbs,vbnet setlocal comments=sr:'\ -,mb:'\ \ ,el:'\ \ ,:',b:rem formatoptions=crq
     autocmd FileType asp* runtime! indent/html.vim
@@ -341,99 +384,43 @@ if has("autocmd")
     autocmd FileType cobol setlocal ai et sta sw=4 sts=4 tw=72 makeprg=cobc\ -x\ -Wall\ %
     autocmd FileType cs silent! compiler cs | setlocal makeprg=gmcs\ %
     autocmd FileType css silent! setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType cucumber silent! compiler cucumber | setl makeprg=cucumber\ "%:p" | imap <buffer><expr> <Tab> pumvisible() ? "\<C-N>" : (CucumberComplete(1,'') >= 0 ? "\<C-X>\<C-O>" : (getline('.') =~ '\S' ? ' ' : "\<C-I>"))
     autocmd FileType git,gitcommit setlocal foldmethod=syntax foldlevel=1
     autocmd FileType gitcommit setlocal spell
-    autocmd FileType gitrebase nnoremap <buffer> S :Cycle<CR>
     autocmd FileType help setlocal ai fo+=2n | silent! setlocal nospell
-    autocmd FileType help nnoremap <silent><buffer> q :q<CR>
     autocmd FileType html setlocal iskeyword+=~
     autocmd FileType java silent! compiler javac | setlocal makeprg=javac\ %
-    autocmd FileType mail if getline(1) =~ '^[A-Za-z-]*:\|^From ' | exe 'norm gg}' |endif|silent! setlocal spell
     autocmd FileType perl silent! compiler perl
     autocmd FileType pdf setlocal foldmethod=syntax foldlevel=1
-    autocmd FileType ruby setlocal tw=79 isfname+=: comments=:#\ " | let &includeexpr = 'tolower(substitute(substitute('.&includeexpr.',"\\(\\u\\+\\)\\(\\u\\l\\)","\\1_\\2","g"),"\\(\\l\\|\\d\\)\\(\\u\\)","\\1_\\2","g"))'
-    autocmd FileType ruby
-          \ if expand('%') =~# '_test\.rb$' |
-          \ compiler rubyunit | setl makeprg=testrb\ \"%:p\" |
-          \ elseif expand('%') =~# '_spec\.rb$' |
-          \ compiler rspec | setl makeprg=rspec\ \"%:p\" |
-          \ else |
-          \ compiler ruby | setl makeprg=ruby\ -wc\ \"%:p\" |
-          \ endif
-    autocmd User Bundler if &makeprg !~ 'bundle' | setl makeprg^=bundle\ exec\ | endif
     autocmd FileType text,txt setlocal tw=78 linebreak nolist
     autocmd FileType tex silent! compiler tex | setlocal makeprg=latex\ -interaction=nonstopmode\ % formatoptions+=l
-    autocmd FileType tex if exists("*IMAP")|
-          \ call IMAP('{}','{}',"tex")|
-          \ call IMAP('[]','[]',"tex")|
-          \ call IMAP('{{','{{',"tex")|
-          \ call IMAP('$$','$$',"tex")|
-          \ call IMAP('^^','^^',"tex")|
-          \ call IMAP('::','::',"tex")|
-          \ call IMAP('`/','`/',"tex")|
-          \ call IMAP('`"\','`"\',"tex")|
-          \ endif
-    autocmd FileType vbnet runtime! indent/vb.vim
     autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
     autocmd FileType * if exists("+omnifunc") && &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
     autocmd FileType * if exists("+completefunc") && &completefunc == "" | setlocal completefunc=syntaxcomplete#Complete | endif
   augroup END "}}}2
 endif " has("autocmd")
 
-" Section: Bundles {{{1
-" ---------------------
-filetype off
-Bundle 'vundle'
-Bundle 'Raimondi/delimitMate'
-Bundle 'Shougo/neocomplcache'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'bling/vim-airline'
-Bundle 'bling/vim-bufferline'
-Bundle 'davidhalter/jedi-vim'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'eagletmt/ghcmod-vim'
-Bundle 'eagletmt/neco-ghc'
-Bundle 'edsono/vim-matchit'
-Bundle 'groenewege/vim-less'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'junegunn/vim-easy-align'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'kien/ctrlp.vim'
-Bundle 'lukerandall/haskellmode-vim'
-Bundle 'mattn/emmet-vim'
-Bundle 'msanders/snipmate.vim'
-Bundle 'nginx.vim'
-Bundle 'othree/javascript-syntax.vim'
-Bundle 'pangloss/vim-javascript'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
-Bundle 'sjl/gundo.vim'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'thinca/vim-poslist'
-Bundle 'thinca/vim-quickrun'
-Bundle 'tpope/vim-abolish'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-git'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-sleuth'
-Bundle 'tpope/vim-surround'
-Bundle 'tsaleh/vim-supertab'
-Bundle 'walm/jshint.vim'
-filetype on
 " Section: BundleOptions {{{1
 " ---------------------
 try
   let g:airline#extensions#tabline#enabled = 1
+  let g:airline_mode_map = {
+        \ '__' : '-',
+        \ 'n'  : 'N',
+        \ 'i'  : 'I',
+        \ 'R'  : 'R',
+        \ 'c'  : 'C',
+        \ 'v'  : 'V',
+        \ 'V'  : 'V',
+        \ '' : 'V',
+        \ 's'  : 'S',
+        \ 'S'  : 'S',
+        \ '' : 'S',
+        \ }
 catch
 endtry
-" Section: Bundles {{{1
-" ---------------------
 " Section: Visual {{{1
 " --------------------
-if has('win32')
+if WINDOWS()
   colorscheme xoria256
   if has('gui')
     set guioptions-=e
@@ -443,8 +430,24 @@ if has('win32')
     set guioptions-=L
     set guioptions-=t
     set guioptions-=T
-    set guifont=Source_Code_Pro:h10:cANSI
-    colorscheme molokai
+    set guifont=Consolas_for_Powerline_FixedD:h9:cANSI
+    let g:airline_powerline_fonts = 1
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '|'
+    let g:airline_left_sep = '⮀'
+    let g:airline_left_alt_sep = '⮁'
+    let g:airline_right_sep = '⮂'
+    let g:airline_right_alt_sep = '⮃'
+    let g:airline_symbols = {}
+    let g:airline_symbols.space = "\ua0"
+    let g:airline_symbols.branch = '⭠'
+    let g:airline_symbols.readonly = '⭤'
+    let g:airline_symbols.linenr = '⭡'
+    let g:airline_symbols.paste = 'Þ'
+    let g:airline_symbols.whitespace = '·'
+    colorscheme solarized
+    let listchars = "tab:\u21e5\u00b7,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u26ad"
+    let g:airline_theme='solarized'
   endif
 endif
 if has('unix')
@@ -454,5 +457,4 @@ endif
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
-autocmd! bufwritepost .vimrc source ~/.vimrc
 " -*- vim -*- vim:set ft=vim et sw=2 sts=2 tw=78:
