@@ -430,7 +430,7 @@ if WINDOWS()
     set guioptions-=L
     set guioptions-=t
     set guioptions-=T
-    set guifont=Consolas_for_Powerline_FixedD:h9:cANSI
+    set guifont=Inconsolata_for_Powerline:h11:cANSI
     let g:airline_powerline_fonts = 1
     let g:airline#extensions#tabline#left_sep = ' '
     let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -445,9 +445,9 @@ if WINDOWS()
     let g:airline_symbols.linenr = '⭡'
     let g:airline_symbols.paste = 'Þ'
     let g:airline_symbols.whitespace = '·'
-    colorscheme solarized
+    colorscheme Tomorrow-Night
     let listchars = "tab:\u21e5\u00b7,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u26ad"
-    let g:airline_theme='solarized'
+    let g:airline_theme='tomorrow'
   endif
 endif
 if has('unix')
