@@ -59,8 +59,7 @@ Plugin 'edsono/vim-matchit'
 Plugin 'groenewege/vim-less'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'junegunn/vim-easy-align'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'kien/ctrlp.vim'
+Plugin 'Shougo/unite.vim'
 Plugin 'lukerandall/haskellmode-vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'msanders/snipmate.vim'
@@ -265,9 +264,6 @@ command! -bar Invert :let &background = (&background=="light"?"dark":"light")
 
 " Section: Mappings {{{1
 " ----------------------
-" plugins
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_working_path_mode = 'ra'
 " ------
 " Leader
 let mapleader = ","
