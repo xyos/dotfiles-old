@@ -59,13 +59,14 @@ Plugin 'edsono/vim-matchit'
 Plugin 'groenewege/vim-less'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'junegunn/vim-easy-align'
-Plugin 'Shougo/unite.vim'
 Plugin 'lukerandall/haskellmode-vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'msanders/snipmate.vim'
 Plugin 'nginx.vim'
 Plugin 'othree/javascript-syntax.vim'
 Plugin 'pangloss/vim-javascript'
+Plugin 'Shougo/neomru.vim'
+Plugin 'Shougo/unite.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/syntastic'
@@ -397,6 +398,12 @@ endif " has("autocmd")
 
 " Section: BundleOptions {{{1
 " ---------------------
+let g:unite_source_history_yank_enable = 1
+nnoremap <Leader>y :Unite history/yank<cr>
+nnoremap <Leader>f :Unite -no-split -start-insert neomru/file file<CR>
+nnoremap <Leader>d :Unite -no-split neomru/directory<CR>
+nnoremap <Leader>b :Unite buffer<CR>
+
 try
   let g:airline#extensions#tabline#enabled = 1
   let g:airline_mode_map = {
@@ -428,19 +435,6 @@ if WINDOWS()
     set guioptions-=T
     set guifont=Inconsolata_for_Powerline:h11:cANSI
     let g:airline_powerline_fonts = 1
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '|'
-    let g:airline_left_sep = '⮀'
-    let g:airline_left_alt_sep = '⮁'
-    let g:airline_right_sep = '⮂'
-    let g:airline_right_alt_sep = '⮃'
-    let g:airline_symbols = {}
-    let g:airline_symbols.space = "\ua0"
-    let g:airline_symbols.branch = '⭠'
-    let g:airline_symbols.readonly = '⭤'
-    let g:airline_symbols.linenr = '⭡'
-    let g:airline_symbols.paste = 'Þ'
-    let g:airline_symbols.whitespace = '·'
     colorscheme Tomorrow-Night
     let listchars = "tab:\u21e5\u00b7,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u26ad"
     let g:airline_theme='tomorrow'
