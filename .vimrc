@@ -59,6 +59,7 @@ Plugin 'edsono/vim-matchit'
 Plugin 'groenewege/vim-less'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'junegunn/vim-easy-align'
+Plugin 'junegunn/rainbow_parentheses.vim'
 Plugin 'lukerandall/haskellmode-vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'msanders/snipmate.vim'
@@ -433,7 +434,7 @@ if WINDOWS()
     set guioptions-=L
     set guioptions-=t
     set guioptions-=T
-    set guifont=Inconsolata_for_Powerline:h11:cANSI
+    set guifont=Source_Code_Pro:h10:cANSI
     let g:airline_powerline_fonts = 1
     colorscheme Tomorrow-Night
     let listchars = "tab:\u21e5\u00b7,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u26ad"
