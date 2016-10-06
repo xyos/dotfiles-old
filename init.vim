@@ -31,7 +31,7 @@ if !&sidescrolloff
   set sidescrolloff=5
 endif
 " ruler
-set cursorline         " CursorLine
+set relativenumber     " relative number
 set ruler
 set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
 set hidden             " Lets you send buffers to backgrund whitout saving them
