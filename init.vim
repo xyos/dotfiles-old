@@ -1,6 +1,11 @@
 "24 bit color
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
+" performance
+set cursorline
+set lazyredraw
+set synmaxcol=128
+syntax sync minlines=256
 " editting
 set autochdir          " Changes dir to current editing
 set cindent            " ident with spaces
