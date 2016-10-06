@@ -24,12 +24,8 @@ set ttimeout
 set ttimeoutlen=50
 set complete-=i        " no autocomplete for includes (faster vim)
 set display+=lastline
-if !&scrolloff
-  set scrolloff=5
-endif
-if !&sidescrolloff
-  set sidescrolloff=5
-endif
+set scrolloff=999      " Keep cursor in the middle of the screen
+set sidescrolloff=80 
 " ruler
 set relativenumber     " relative number
 set ruler
@@ -42,7 +38,6 @@ set showmode           " Shows current mode under the status bar
 set autowrite          " Autowrite on some commands (make)
 set timeoutlen=1200    " A little bit more time for macros
 set ttimeoutlen=50     " Make Esc work faster
-set scrolloff=1        " Minimum number of lines to show up/dow of current line
 set showcmd            " Show commands as you type them
 set complete-=i        " Smart complete
 set laststatus=2       " Always show  status lines
