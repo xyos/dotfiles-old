@@ -47,6 +47,7 @@ set showcmd            " Show commands as you type them
 set complete-=i        " Smart complete
 set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
+set backup		" Backup files
 set backupskip+=*.tmp,crontab.* " Don't backup those files
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
