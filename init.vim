@@ -66,8 +66,8 @@ command! -bar -nargs=* -bang -complete=file Rename :
 " ----------------------
 " ------
 " Leader
-let mapleader = ","
-let maplocalleader = ","
+let mapleader = "Space"
+let maplocalleader = "Space"
 " ------
 nnoremap Y y$
 " Remove highligh search
@@ -165,6 +165,9 @@ Plug 'stephpy/vim-php-cs-fixer', { 'for': 'php' }
 Plug 'benekastah/neomake'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'pbogut/deoplete-padawan', { 'for' : ['php'] }
 
 call plug#end()
 
