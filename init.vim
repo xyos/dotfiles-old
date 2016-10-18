@@ -164,6 +164,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'stephpy/vim-php-cs-fixer', { 'for': 'php' }
 Plug 'benekastah/neomake'
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
