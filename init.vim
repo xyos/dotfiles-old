@@ -24,10 +24,15 @@ set ttimeout
 set ttimeoutlen=50
 set complete-=i        " no autocomplete for includes (faster vim)
 set display+=lastline
-set scrolloff=999      " Keep cursor in the middle of the screen
-set sidescrolloff=80 
+if !&scrolloff
+  set scrolloff=5
+endif
+if !&sidescrolloff
+  set sidescrolloff=5
+endif
 " ruler
 set relativenumber     " relative number
+set cursorline         " CursorLine
 set ruler
 set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
 set hidden             " Lets you send buffers to backgrund whitout saving them
@@ -66,8 +71,8 @@ command! -bar -nargs=* -bang -complete=file Rename :
 " ----------------------
 " ------
 " Leader
-let mapleader = "Space"
-let maplocalleader = "Space"
+let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
 " ------
 nnoremap Y y$
 " Remove highligh search
@@ -135,6 +140,8 @@ vnoremap <Leader>c "dymz"dP`z
 nnoremap ; :
 nnoremap ,; ;
 "PHP mappings
+autocmd FileType php noremap L f$l
+autocmd FileType php noremap H F$l
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -254,4 +261,13 @@ let g:airline_powerline_fonts = 1
 
 if exists(':tnoremap')
   tnoremap <Esc> <C-\><C-n>
+endif
+" copy the current text selection to the system clipboard
+if has('gui_running') || has('nvim') && exists('$DISPLAY')
+  set clipboard=unnamed
+  noremap <Leader>y "+y
+else
+  " copy to attached terminal using the yank(1) script:
+  " https://github.com/sunaku/home/blob/master/bin/yank
+  noremap <silent> <Leader>y y:call system('yank > /dev/tty', @0)<Return>
 endif
