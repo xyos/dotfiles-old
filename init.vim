@@ -20,21 +20,15 @@ set showmatch          " Shows matching Bracket, parenthesis, etc...
 set smartcase          " Matchs uppercase on search
 set matchtime=5        " Time to show matching Bracket
 " other options
-set ttimeout
-set ttimeoutlen=50
-set complete-=i        " no autocomplete for includes (faster vim)
+set list               " Show tabs and eol
+set listchars=tab:▸\ ,eol:¬,extends:…,precedes:…
 set display+=lastline
-if !&scrolloff
-  set scrolloff=5
-endif
-if !&sidescrolloff
-  set sidescrolloff=5
-endif
+set scrolloff=5
+set sidescrolloff=5
 " ruler
 set relativenumber     " relative number
+set number             " hibrid number"
 set cursorline         " CursorLine
-set ruler
-set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
 set hidden             " Lets you send buffers to backgrund whitout saving them
 set noerrorbells       " No beeps on error
 set title              " Set the title in GUI/screen mode
@@ -42,13 +36,16 @@ set encoding=utf-8     " Utf-8
 set showmode           " Shows current mode under the status bar
 set autowrite          " Autowrite on some commands (make)
 set timeoutlen=1200    " A little bit more time for macros
+set ttimeout
 set ttimeoutlen=50     " Make Esc work faster
 set showcmd            " Show commands as you type them
 set complete-=i        " Smart complete
 set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
-set backup		" Backup files
+set backup             " Backup files
 set backupskip+=*.tmp,crontab.* " Don't backup those files
+set backupdir=~/.local/share/nvim/backup
+set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
 " Section: Commands {{{1
@@ -76,9 +73,7 @@ let maplocalleader = "\<Space>"
 " ------
 nnoremap Y y$
 " Remove highligh search
-if exists(":hohls")
-  nmap <silent> <leader>/ :nohls<CR>
-endif
+nmap <silent> <leader>/ :nohls<CR>
 " ------
 inoremap <C-C> <Esc>`^
 " jj to esc and smarter k and j
@@ -91,13 +86,13 @@ nnoremap =p m`=ap``
 nnoremap == ==
 vnoremap <M-<> <gv
 vnoremap <M->> >gv
-vnoremap <Space> I<Space><Esc>gv
 " inserts comment at the current line with vim settings
 " ex:
 " " -*- vim -*- vim:set ft=vim et sw=2 sts=2:
 inoremap <C-X>^ <C-R>=substitute(&commentstring,' \=%s\>'," -*- ".&ft." -*- vim:set ft=".&ft." ".(&et?"et":"noet")." sw=".&sw." sts=".&sts.':','')<CR>
 
 " Common motions on insert and command mode
+
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
 inoremap <M-I> <C-O>^
@@ -175,6 +170,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'pbogut/deoplete-padawan', { 'for' : ['php'] }
+Plug 'metakirby5/codi.vim'
+Plug 'rhysd/clever-f.vim'
+
 
 call plug#end()
 
