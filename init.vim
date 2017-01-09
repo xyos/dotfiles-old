@@ -269,3 +269,5 @@ else
   " https://github.com/sunaku/home/blob/master/bin/yank
   noremap <silent> <Leader>y y:call system('yank > /dev/tty', @0)<Return>
 endif
+" set incremental preview
+set inccommand=split
