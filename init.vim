@@ -92,7 +92,6 @@ vnoremap <M->> >gv
 inoremap <C-X>^ <C-R>=substitute(&commentstring,' \=%s\>'," -*- ".&ft." -*- vim:set ft=".&ft." ".(&et?"et":"noet")." sw=".&sw." sts=".&sts.':','')<CR>
 
 " Common motions on insert and command mode
-
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
 inoremap <M-I> <C-O>^
@@ -141,50 +140,51 @@ autocmd FileType php noremap H F$l
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 call plug#begin('~/.config/nvim/plugged')
+Plug 'Raimondi/delimitMate'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
+Plug 'airblade/vim-gitgutter'
+Plug 'benekastah/neomake'
 Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'dracula/vim'
 Plug 'ervandew/supertab'
-Plug 'godlygeek/tabular'
 Plug 'honza/vim-snippets'
 Plug 'iCyMind/NeoSolarized'
-Plug 'mattn/emmet-vim'
-Plug 'othree/html5.vim'
-Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'plasticboy/vim-markdown'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript', 'javascript.jsx'] }
-Plug 'vim-airline/vim-airline'
-Plug 'tpope/vim-surround'
-Plug 'Raimondi/delimitMate'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'zenbro/mirror.vim'
 Plug 'jreybert/vimagit'
-Plug 'sheerun/vim-polyglot'
-Plug 'stephpy/vim-php-cs-fixer', { 'for': 'php' }
-Plug 'benekastah/neomake'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'pbogut/deoplete-padawan', { 'for' : ['php'] }
-Plug 'metakirby5/codi.vim'
+Plug 'mattn/emmet-vim'
+Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'plasticboy/vim-markdown'
 Plug 'rhysd/clever-f.vim'
-
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'sheerun/vim-polyglot'
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'zenbro/mirror.vim'
 
 call plug#end()
 
 let g:airline_theme='dracula'
 colorscheme dracula
 let g:deoplete#enable_at_startup = 1
+if !exists('g:deoplete#omni#input_patterns')
+  let g:deoplete#omni#input_patterns = {}
+endif
+" let g:deoplete#disable_auto_complete = 1
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
 " omnifuncs
 augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType javascript,javscript.jsx set formatprg=prettier\ --stdin
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
   autocmd FileType php noremap L f$l
