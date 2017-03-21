@@ -1,3 +1,45 @@
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+
+if dein#load_state(expand('~/.cache/dein'))
+  call dein#begin(expand('~/.cache/dein'))
+  call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
+  call dein#add('Raimondi/delimitMate')
+  call dein#add('Shougo/deoplete.nvim', { 'build': ':UpdateRemotePlugins' })
+  call dein#add('SirVer/ultisnips')
+  call dein#add('airblade/vim-gitgutter')
+  call dein#add('benekastah/neomake')
+  call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('dracula/vim')
+  call dein#add('ervandew/supertab')
+  call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('honza/vim-snippets')
+  call dein#add('iCyMind/NeoSolarized')
+  call dein#add('jreybert/vimagit')
+  call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
+  call dein#add('junegunn/fzf.vim')
+  call dein#add('mattn/emmet-vim')
+  call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
+
+  call dein#add('plasticboy/vim-markdown')
+  call dein#add('rhysd/clever-f.vim')
+  call dein#add('sbdchd/neoformat')
+  call dein#add('scrooloose/nerdcommenter')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('sheerun/vim-polyglot')
+  call dein#add('ternjs/tern_for_vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('tpope/vim-surround')
+  call dein#add('vim-airline/vim-airline')
+  call dein#add('vim-airline/vim-airline-themes')
+  call dein#add('zenbro/mirror.vim')
+  call dein#end()
+  call dein#save_state()
+
+endif
+
+filetype plugin indent on
+syntax enable
+
 "24 bit color
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
@@ -44,7 +86,9 @@ set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
 set backup             " Backup files
 set backupskip+=*.tmp,crontab.* " Don't backup those files
+call mkdir(expand('~/.local/share/nvim/backup'),'p')
 set backupdir=~/.local/share/nvim/backup
+call mkdir(expand('~/.local/share/nvim/undo'),'p')
 set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
@@ -139,35 +183,6 @@ autocmd FileType php noremap H F$l
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin('~/.config/nvim/plugged')
-Plug 'Raimondi/delimitMate'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'SirVer/ultisnips'
-Plug 'airblade/vim-gitgutter'
-Plug 'benekastah/neomake'
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'dracula/vim'
-Plug 'ervandew/supertab'
-Plug 'honza/vim-snippets'
-Plug 'iCyMind/NeoSolarized'
-Plug 'jreybert/vimagit'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'mattn/emmet-vim'
-Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'plasticboy/vim-markdown'
-Plug 'rhysd/clever-f.vim'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot'
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'zenbro/mirror.vim'
-
-call plug#end()
 
 let g:airline_theme='dracula'
 colorscheme dracula
@@ -223,7 +238,7 @@ augroup omnifuncs
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
 augroup end
 
-if has_key(g:plugs, 'neomake')
+if dein#tap('neomake')
   " let g:neomake_verbose = 2
   " let g:neomake_logfile = '/tmp/neomake.log'
   " Disable phpcs by default
