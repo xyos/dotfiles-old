@@ -130,8 +130,10 @@ map <C-l> <C-w>l
 map <C-+> <C-w>+
 map <C--> <C-w>-
 " ---------------
-nnoremap <Leader>c mz"dyy"dp`z
-vnoremap <Leader>c "dymz"dP`z
+nnoremap <Leader>y "*y
+vnoremap <Leader>y "*y
+nnoremap <Leader>p "*p
+vnoremap <Leader>p "*p
 nnoremap ; :
 nnoremap ,; ;
 "PHP mappings
@@ -221,6 +223,7 @@ augroup omnifuncs
   autocmd FileType text,txt setlocal tw=78 linebreak nolist
   autocmd FileType tex silent! compiler tex | setlocal makeprg=latex\ -interaction=nonstopmode\ % formatoptions+=l
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
+  autocmd FileType javascript,javascript.jsx set formatprg=prettier\ --stdin
 augroup end
 
 if has_key(g:plugs, 'neomake')
