@@ -1,3 +1,45 @@
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+
+if dein#load_state(expand('~/.cache/dein'))
+  call dein#begin(expand('~/.cache/dein'))
+  call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
+  call dein#add('Raimondi/delimitMate')
+  call dein#add('Shougo/deoplete.nvim', { 'build': ':UpdateRemotePlugins' })
+  call dein#add('SirVer/ultisnips')
+  call dein#add('airblade/vim-gitgutter')
+  call dein#add('benekastah/neomake')
+  call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('dracula/vim')
+  call dein#add('ervandew/supertab')
+  call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('honza/vim-snippets')
+  call dein#add('iCyMind/NeoSolarized')
+  call dein#add('jreybert/vimagit')
+  call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
+  call dein#add('junegunn/fzf.vim')
+  call dein#add('mattn/emmet-vim')
+  call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
+
+  call dein#add('plasticboy/vim-markdown')
+  call dein#add('rhysd/clever-f.vim')
+  call dein#add('sbdchd/neoformat')
+  call dein#add('scrooloose/nerdcommenter')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('sheerun/vim-polyglot')
+  call dein#add('ternjs/tern_for_vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('tpope/vim-surround')
+  call dein#add('vim-airline/vim-airline')
+  call dein#add('vim-airline/vim-airline-themes')
+  call dein#add('zenbro/mirror.vim')
+  call dein#end()
+  call dein#save_state()
+
+endif
+
+filetype plugin indent on
+syntax enable
+
 "24 bit color
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
@@ -44,7 +86,9 @@ set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
 set backup             " Backup files
 set backupskip+=*.tmp,crontab.* " Don't backup those files
+call mkdir(expand('~/.local/share/nvim/backup'),'p')
 set backupdir=~/.local/share/nvim/backup
+call mkdir(expand('~/.local/share/nvim/undo'),'p')
 set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
@@ -92,7 +136,6 @@ vnoremap <M->> >gv
 inoremap <C-X>^ <C-R>=substitute(&commentstring,' \=%s\>'," -*- ".&ft." -*- vim:set ft=".&ft." ".(&et?"et":"noet")." sw=".&sw." sts=".&sts.':','')<CR>
 
 " Common motions on insert and command mode
-
 inoremap <M-o> <C-O>o
 inoremap <M-O> <C-O>O
 inoremap <M-I> <C-O>^
@@ -142,51 +185,23 @@ autocmd FileType php noremap H F$l
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-call plug#begin('~/.config/nvim/plugged')
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'SirVer/ultisnips'
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'dracula/vim'
-Plug 'ervandew/supertab'
-Plug 'godlygeek/tabular'
-Plug 'honza/vim-snippets'
-Plug 'iCyMind/NeoSolarized'
-Plug 'mattn/emmet-vim'
-Plug 'othree/html5.vim'
-Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'plasticboy/vim-markdown'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript', 'javascript.jsx'] }
-Plug 'vim-airline/vim-airline'
-Plug 'tpope/vim-surround'
-Plug 'Raimondi/delimitMate'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'zenbro/mirror.vim'
-Plug 'jreybert/vimagit'
-Plug 'sheerun/vim-polyglot'
-Plug 'stephpy/vim-php-cs-fixer', { 'for': 'php' }
-Plug 'benekastah/neomake'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'pbogut/deoplete-padawan', { 'for' : ['php'] }
-Plug 'metakirby5/codi.vim'
-Plug 'rhysd/clever-f.vim'
-
-
-call plug#end()
 
 let g:airline_theme='dracula'
 colorscheme dracula
 let g:deoplete#enable_at_startup = 1
+if !exists('g:deoplete#omni#input_patterns')
+  let g:deoplete#omni#input_patterns = {}
+endif
+" let g:deoplete#disable_auto_complete = 1
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
 " omnifuncs
 augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType javascript,javscript.jsx set formatprg=prettier\ --single-quote\ --stdin
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
   autocmd FileType php noremap L f$l
@@ -226,7 +241,7 @@ augroup omnifuncs
   autocmd FileType javascript,javascript.jsx set formatprg=prettier\ --stdin
 augroup end
 
-if has_key(g:plugs, 'neomake')
+if dein#tap('neomake')
   " let g:neomake_verbose = 2
   " let g:neomake_logfile = '/tmp/neomake.log'
   " Disable phpcs by default
@@ -272,3 +287,5 @@ else
   " https://github.com/sunaku/home/blob/master/bin/yank
   noremap <silent> <Leader>y y:call system('yank > /dev/tty', @0)<Return>
 endif
+" set incremental preview
+set inccommand=split
