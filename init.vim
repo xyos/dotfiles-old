@@ -238,14 +238,21 @@ augroup omnifuncs
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
 augroup end
 
+if dein#tap('tern_for_vim')
+  let g:tern#command = ['tern']
+  let g:tern#arguments = ["--persistent"]
+endif
+
+if dein#tap('vim-flow')
+  let g:flow#autoclose = 1
+endif
+
 if dein#tap('neomake')
   " let g:neomake_verbose = 2
   " let g:neomake_logfile = '/tmp/neomake.log'
   " Disable phpcs by default
   let g:neomake_php_enabled_makers = ['php', 'phpmd']
-  let g:neomake_javascript_enabled_makers = ['jshint']
-  let g:neomake_open_list=2
-  let g:neomake_list_height=5
+  let g:neomake_javascript_enabled_makers = ['eslint']
   autocmd! BufWritePost * Neomake
 endif
 
@@ -263,8 +270,6 @@ endif
 set completeopt=longest,menuone,preview
 let g:deoplete#sources = {}
 let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
 autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:UltiSnipsExpandTrigger="<C-j>"
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
