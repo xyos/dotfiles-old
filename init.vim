@@ -4,7 +4,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#begin(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
   call dein#add('Raimondi/delimitMate')
-  call dein#add('Shougo/deoplete.nvim', { 'build': ':UpdateRemotePlugins' })
+  call dein#add('Shougo/deoplete.nvim')
   call dein#add('SirVer/ultisnips')
   call dein#add('airblade/vim-gitgutter')
   call dein#add('benekastah/neomake')
@@ -14,7 +14,6 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('honza/vim-snippets')
   call dein#add('iCyMind/NeoSolarized')
-  call dein#add('jreybert/vimagit')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
   call dein#add('mattn/emmet-vim')
@@ -189,10 +188,18 @@ autocmd FileType php noremap H F$l
 let g:airline_theme='dracula'
 colorscheme dracula
 let g:deoplete#enable_at_startup = 1
-if !exists('g:deoplete#omni#input_patterns')
-  let g:deoplete#omni#input_patterns = {}
-endif
-" let g:deoplete#disable_auto_complete = 1
+
+" Use deoplete.
+let g:tern_request_timeout = 1
+let g:tern_show_signature_in_pum = '0'  " This do disable full signature type on autocomplete
+
+"Add extra filetypes
+let g:tern#filetypes = [
+                \ 'jsx',
+                \ 'javascript.jsx',
+                \ 'vue',
+                \ ]
+
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " omnifuncs
