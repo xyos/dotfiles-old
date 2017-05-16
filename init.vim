@@ -5,9 +5,9 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
   call dein#add('Raimondi/delimitMate')
   call dein#add('Shougo/deoplete.nvim')
+  call dein#add('w0rp/ale.git')
   call dein#add('SirVer/ultisnips')
   call dein#add('airblade/vim-gitgutter')
-  call dein#add('benekastah/neomake')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
   call dein#add('ervandew/supertab')
@@ -17,6 +17,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
   call dein#add('mattn/emmet-vim')
+  call dein#add('mhartington/oceanic-next')
   call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
 
   call dein#add('plasticboy/vim-markdown')
@@ -185,8 +186,8 @@ autocmd FileType php noremap H F$l
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-let g:airline_theme='dracula'
-colorscheme dracula
+let g:airline_theme='oceanicnext'
+colorscheme OceanicNext
 let g:deoplete#enable_at_startup = 1
 
 " Use deoplete.
@@ -256,14 +257,10 @@ if dein#tap('vim-flow')
   let g:flow#autoclose = 1
 endif
 
-if dein#tap('neomake')
-  " let g:neomake_verbose = 2
-  " let g:neomake_logfile = '/tmp/neomake.log'
-  " Disable phpcs by default
-  let g:neomake_php_enabled_makers = ['php', 'phpmd']
-  let g:neomake_javascript_enabled_makers = ['eslint']
-  autocmd! BufWritePost * Neomake
-endif
+let g:ale_linters = {
+      \ 'javascript': ['eslint'],
+      \ 'php': ['phpmd']
+      \}
 
 let g:deoplete#omni#functions = {}
 let g:deoplete#omni#functions.javascript = [
