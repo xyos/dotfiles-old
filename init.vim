@@ -5,7 +5,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
   call dein#add('Raimondi/delimitMate')
   call dein#add('Shougo/deoplete.nvim')
-  call dein#add('w0rp/ale.git')
+  call dein#add('neomake/neomake')
   call dein#add('SirVer/ultisnips')
   call dein#add('airblade/vim-gitgutter')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
@@ -258,6 +258,11 @@ augroup end
 if dein#tap('tern_for_vim')
   let g:tern#command = ['tern']
   let g:tern#arguments = ["--persistent"]
+endif
+
+if dein#tap('vim-easy-align')
+  xmap ga <Plug>(EasyAlign)
+  nmap ga <Plug>(EasyAlign)
 endif
 
 if dein#tap('vim-flow')
