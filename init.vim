@@ -18,6 +18,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
   call dein#add('mattn/emmet-vim')
+  call dein#add('metakirby5/codi.vim')
   call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
 
   call dein#add('plasticboy/vim-markdown')
