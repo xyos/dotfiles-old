@@ -20,6 +20,9 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('mattn/emmet-vim')
   call dein#add('mhartington/oceanic-next')
   call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
+  " Elixir
+  call dein#add('elixir-lang/vim-elixir')
+  call dein#add('slashmili/alchemist.vim')
 
   call dein#add('plasticboy/vim-markdown')
   call dein#add('rhysd/clever-f.vim')
