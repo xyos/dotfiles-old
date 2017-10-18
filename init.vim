@@ -3,6 +3,11 @@ execute 'source' fnamemodify(expand('<sfile>'), ':h').'/nvim/mappings.vim'
 "24 bit color
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
+if exists('$TMUX')
+  " Colors in tmux
+  let &t_8f = "<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "<Esc>[48;2;%lu;%lu;%lum"
+endif
 " performance
 set cursorline
 set lazyredraw
@@ -54,8 +59,7 @@ set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
 " set incremental preview
 set inccommand=split
-" Section: Commands {{{1
-" -----------------------
+" Section: Commands {{{1 ----------------------
 " Commands for vim command Line
 "
 
@@ -130,40 +134,4 @@ augroup omnifuncs
   autocmd FileType text,txt setlocal tw=78 linebreak nolist
   autocmd FileType tex silent! compiler tex | setlocal makeprg=latex\ -interaction=nonstopmode\ % formatoptions+=l
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
-  autocmd FileType javascript,javascript.jsx set formatprg=prettier\ --stdin
 augroup end
-
-if dein#tap('tern_for_vim')
-  let g:tern#command = ['tern']
-  let g:tern#arguments = ["--persistent"]
-endif
-
-if dein#tap('vim-flow')
-  let g:flow#autoclose = 1
-endif
-
-let g:ale_linters = {
-      \ 'javascript': ['eslint'],
-      \ 'php': ['phpmd']
-      \}
-
-let g:deoplete#omni#functions = {}
-let g:deoplete#omni#functions.javascript = [
-      \ 'tern#Complete',
-      \ 'jspc#omni'
-      \]
-" tern
-if exists('g:plugs["tern_for_vim"]')
-  let g:tern_show_argument_hints = 'on_hold'
-  let g:tern_show_signature_in_pum = 1
-  autocmd FileType javascript setlocal omnifunc=tern#Complete
-endif
-set completeopt=longest,menuone,preview
-let g:deoplete#sources = {}
-let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
-autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
-let g:UltiSnipsExpandTrigger="<C-j>"
-" close the preview window when you're not using it
-let g:SuperTabClosePreviewOnPopupClose = 1
-let g:airline_powerline_fonts = 1
-
