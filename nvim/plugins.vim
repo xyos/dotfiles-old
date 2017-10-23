@@ -2,8 +2,8 @@ set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
 if dein#load_state(expand('~/.cache/dein'))
   call dein#begin(expand('~/.cache/dein'))
-  call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim')
-  call dein#add('Raimondi/delimitMate')
+  call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim') " Installs plugins
+  call dein#add('Raimondi/delimitMate') 
   call dein#add('Shougo/deoplete.nvim')
   call dein#add('neomake/neomake')
   call dein#add('SirVer/ultisnips')
@@ -66,11 +66,10 @@ let g:ale_linters = {
       \ 'javascript': ['eslint'],
       \ 'php': ['phpmd']
       \}
-
+let g:deoplete#enable_at_startup = 1
 let g:deoplete#omni#functions = {}
 let g:deoplete#omni#functions.javascript = [
       \ 'tern#Complete',
-      \ 'jspc#omni'
       \]
 " tern
 if exists('g:plugs["tern_for_vim"]')
@@ -80,11 +79,11 @@ if exists('g:plugs["tern_for_vim"]')
 endif
 set completeopt=longest,menuone,preview
 let g:deoplete#sources = {}
-let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript.jsx'] = ['ternjs', 'file', 'ultisnips', 'buffer']
 autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:UltiSnipsExpandTrigger='<C-j>'
 " close the preview window when you're not using it
 let g:SuperTabClosePreviewOnPopupClose = 1
 let g:airline_powerline_fonts = 1
 call neomake#configure#automake('w')
-let g:neomake_javascript_enabled_makers = ['eslint']
+let g:neomake_javascript_jsx_enabled_makers = ['eslint']
