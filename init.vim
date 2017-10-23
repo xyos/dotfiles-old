@@ -14,7 +14,6 @@ set lazyredraw
 set synmaxcol=512
 syntax sync minlines=512
 " editting
-set autochdir          " Changes dir to current editing
 set cindent            " ident with spaces
 set smarttab           " Insert spaces when indenting with tab
 set smartindent        " Smart ident depending on the language
@@ -135,3 +134,6 @@ augroup omnifuncs
   autocmd FileType tex silent! compiler tex | setlocal makeprg=latex\ -interaction=nonstopmode\ % formatoptions+=l
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
 augroup end
+
+command! -bang -nargs=* Find
+  \ call fzf#vim#grep('rg --column --line-number --no-heading --color=always '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
