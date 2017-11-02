@@ -10,7 +10,6 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('airblade/vim-gitgutter')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
-  call dein#add('ervandew/supertab')
   call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('honza/vim-snippets')
   call dein#add('iCyMind/NeoSolarized')
@@ -55,7 +54,7 @@ let g:oceanic_next_terminal_italic = 1
 
 if dein#tap('tern_for_vim')
   let g:tern#command = ['tern']
-  let g:tern#arguments = ["--persistent"]
+  let g:tern#arguments = ['--persistent']
 endif
 
 if dein#tap('vim-flow')
