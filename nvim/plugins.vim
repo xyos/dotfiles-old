@@ -5,7 +5,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim') " Installs plugins
   call dein#add('Raimondi/delimitMate') 
   call dein#add('Shougo/deoplete.nvim')
-  call dein#add('neomake/neomake'
+  call dein#add('neomake/neomake')
   call dein#add('airblade/vim-gitgutter')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
@@ -39,6 +39,8 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('vim-airline/vim-airline')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('zenbro/mirror.vim')
+
+  call dein#add('roxma/vim-tmux-clipboard')
 
   " Snippets
   call dein#add('Shougo/neosnippet')
