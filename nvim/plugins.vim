@@ -92,3 +92,10 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 let g:airline_powerline_fonts = 1
 call neomake#configure#automake('w')
 let g:neomake_javascript_jsx_enabled_makers = ['eslint']
+" use ripreg with fzf
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
