@@ -5,16 +5,15 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim') " Installs plugins
   call dein#add('Raimondi/delimitMate') 
   call dein#add('Shougo/deoplete.nvim')
-  call dein#add('neomake/neomake')
-  call dein#add('SirVer/ultisnips')
+  call dein#add('neomake/neomake'
   call dein#add('airblade/vim-gitgutter')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
   call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
-  call dein#add('honza/vim-snippets')
   call dein#add('iCyMind/NeoSolarized')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
+  call dein#add('mhartington/nvim-typescript')
   call dein#add('junegunn/vim-easy-align')
   call dein#add('mattn/emmet-vim')
   call dein#add('mhartington/oceanic-next')
@@ -40,9 +39,13 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('vim-airline/vim-airline')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('zenbro/mirror.vim')
+
+  " Snippets
+  call dein#add('Shougo/neosnippet')
+  call dein#add('Shougo/neosnippet-snippets')
+
   call dein#end()
   call dein#save_state()
-
 endif
 
 filetype plugin indent on
@@ -67,6 +70,7 @@ let g:ale_linters = {
       \}
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#omni#functions = {}
+let g:nvim_typescript#default_mappings = 1
 let g:deoplete#omni#functions.javascript = [
       \ 'tern#Complete',
       \]
