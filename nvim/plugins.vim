@@ -9,19 +9,10 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('airblade/vim-gitgutter')
   call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
-  call dein#add('flowtype/vim-flow', { 'on_ft': ['javascript', 'javascript.jsx'] })
-  call dein#add('iCyMind/NeoSolarized')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
-  call dein#add('mhartington/nvim-typescript')
   call dein#add('junegunn/vim-easy-align')
   call dein#add('mattn/emmet-vim')
-  call dein#add('mhartington/oceanic-next')
-  call dein#add('othree/jspc.vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
-  " Elixir
-  call dein#add('elixir-lang/vim-elixir')
-  call dein#add('slashmili/alchemist.vim')
-  call dein#add('myusuf3/numbers.vim')
 
   call dein#add('plasticboy/vim-markdown')
   call dein#add('rhysd/clever-f.vim')
@@ -29,22 +20,38 @@ if dein#load_state(expand('~/.cache/dein'))
 
   call dein#add('scrooloose/nerdtree')
   call dein#add('sheerun/vim-polyglot')
-  call dein#add('ternjs/tern_for_vim', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('tpope/vim-commentary')
   call dein#add('tpope/vim-fugitive')
+  call dein#add('sodapopcan/vim-twiggy')
   call dein#add('tpope/vim-rhubarb')
+  call dein#add('tpope/vim-dadbod')
+  call dein#add('tpope/vim-vinegar')
   call dein#add('tpope/vim-repeat')
   call dein#add('tpope/vim-surround')
   call dein#add('tpope/vim-unimpaired')
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('vim-airline/vim-airline-themes')
-  call dein#add('zenbro/mirror.vim')
 
   call dein#add('roxma/vim-tmux-clipboard')
+  " Language Completion
+  call dein#add('autozimu/LanguageClient-neovim', {'rev' : 'next', 'build' : 'bash install.sh'})
+  " JavaScript & Web
+  call dein#add('sourcegraph/javascript-typescript-langserver')
+  call dein#add('Microsoft/vscode-json-languageservice')
+  call dein#add('Microsoft/vscode-css-languageservice')
+  call dein#add('Microsoft/vscode-html-languageservice')
+  " Elixir
+  call dein#add('elixir-lang/vim-elixir')
+  call dein#add('slashmili/alchemist.vim')
+  call dein#add('myusuf3/numbers.vim')
 
   " Snippets
   call dein#add('Shougo/neosnippet')
   call dein#add('Shougo/neosnippet-snippets')
+  " Colors / UI
+  call dein#add('vim-airline/vim-airline')
+  call dein#add('ryanoasis/vim-devicons')
+  call dein#add('vim-airline/vim-airline-themes')
+  call dein#add('mhartington/oceanic-next')
+  call dein#add('iCyMind/NeoSolarized')
 
   call dein#end()
   call dein#save_state()
@@ -57,14 +64,11 @@ let g:oceanic_next_terminal_bold = 1
 let g:airline_theme='oceanicnext'
 let g:oceanic_next_terminal_italic = 1
 
-if dein#tap('tern_for_vim')
-  let g:tern#command = ['tern']
-  let g:tern#arguments = ['--persistent']
-endif
-
 if dein#tap('vim-flow')
   let g:flow#autoclose = 1
 endif
+
+let NERDTreeHijackNetrw=1
 
 let g:ale_linters = {
       \ 'javascript': ['eslint'],
@@ -76,12 +80,6 @@ let g:nvim_typescript#default_mappings = 1
 let g:deoplete#omni#functions.javascript = [
       \ 'tern#Complete',
       \]
-" tern
-if exists('g:plugs["tern_for_vim"]')
-  let g:tern_show_argument_hints = 'on_hold'
-  let g:tern_show_signature_in_pum = 1
-  autocmd FileType javascript setlocal omnifunc=tern#Complete
-endif
 set completeopt=longest,menuone,preview
 let g:deoplete#sources = {}
 let g:deoplete#sources['javascript.jsx'] = ['ternjs', 'file', 'ultisnips', 'buffer']
@@ -99,3 +97,11 @@ command! -bang -nargs=* Rg
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
+" LanguageClient 
+let g:LanguageClient_serverCommands = {
+    \ 'javascript.jsx': ['javascript-typescript-stdio'],
+    \ }
+
+nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
