@@ -41,3 +41,5 @@ augroup omnifuncs
   autocmd FileType tex silent! compiler tex | setlocal makeprg=latex\ -interaction=nonstopmode\ % formatoptions+=l
   autocmd FileType vim setlocal ai et sta sw=2 sts=2 keywordprg=:help
 augroup end
+
+command -nargs=* Glg Git! log --graph --pretty=format:'\%h - (\%ad)\%d \%s <\%an>' --abbrev-commit --date=local <args>

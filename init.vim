@@ -83,16 +83,10 @@ let g:airline_theme='oceanicnext'
 colorscheme OceanicNext
 let g:deoplete#enable_at_startup = 1
 
-" Use deoplete.
-let g:tern_request_timeout = 1
-let g:tern_show_signature_in_pum = '0'  " This do disable full signature type on autocomplete
-
-"Add extra filetypes
-let g:tern#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'vue',
-                \ ]
+if executable("rg")
+  set grepprg=rg\ --vimgrep\ --no-heading
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
 
 command! -bang -nargs=* Find
   \ call fzf#vim#grep('rg --column --line-number --no-heading --color=always '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)

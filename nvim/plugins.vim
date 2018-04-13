@@ -4,10 +4,9 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#begin(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim') " Installs plugins
   call dein#add('Raimondi/delimitMate') 
-  call dein#add('Shougo/deoplete.nvim')
+  call dein#add('roxma/nvim-completion-manager')
   call dein#add('neomake/neomake')
   call dein#add('airblade/vim-gitgutter')
-  call dein#add('carlitux/deoplete-ternjs', { 'on_ft': ['javascript', 'javascript.jsx'] })
   call dein#add('dracula/vim')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
@@ -64,29 +63,11 @@ let g:oceanic_next_terminal_bold = 1
 let g:airline_theme='oceanicnext'
 let g:oceanic_next_terminal_italic = 1
 
-if dein#tap('vim-flow')
-  let g:flow#autoclose = 1
-endif
-
 let NERDTreeHijackNetrw=1
 
-let g:ale_linters = {
-      \ 'javascript': ['eslint'],
-      \ 'php': ['phpmd']
-      \}
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#omni#functions = {}
-let g:nvim_typescript#default_mappings = 1
-let g:deoplete#omni#functions.javascript = [
-      \ 'tern#Complete',
-      \]
-set completeopt=longest,menuone,preview
-let g:deoplete#sources = {}
-let g:deoplete#sources['javascript.jsx'] = ['ternjs', 'file', 'ultisnips', 'buffer']
-autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
-let g:UltiSnipsExpandTrigger='<C-j>'
-" close the preview window when you're not using it
-let g:SuperTabClosePreviewOnPopupClose = 1
+imap <C-n>     <Plug>(neosnippet_expand_or_jump)
+smap <C-n>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-n>     <Plug>(neosnippet_expand_target)
 let g:airline_powerline_fonts = 1
 call neomake#configure#automake('w')
 let g:neomake_javascript_jsx_enabled_makers = ['eslint']
@@ -100,6 +81,7 @@ command! -bang -nargs=* Rg
 " LanguageClient 
 let g:LanguageClient_serverCommands = {
     \ 'javascript.jsx': ['javascript-typescript-stdio'],
+    \ 'javascript': ['javascript-typescript-stdio'],
     \ }
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
