@@ -6,8 +6,6 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('Raimondi/delimitMate') 
   call dein#add('roxma/nvim-completion-manager')
   call dein#add('neomake/neomake')
-  call dein#add('airblade/vim-gitgutter')
-  call dein#add('dracula/vim')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
   call dein#add('junegunn/vim-easy-align')
@@ -24,6 +22,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('sodapopcan/vim-twiggy')
   call dein#add('tpope/vim-rhubarb')
   call dein#add('tpope/vim-dadbod')
+  call dein#add('tpope/vim-dispatch')
   call dein#add('tpope/vim-vinegar')
   call dein#add('tpope/vim-repeat')
   call dein#add('tpope/vim-surround')
@@ -47,10 +46,13 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('Shougo/neosnippet-snippets')
   " Colors / UI
   call dein#add('vim-airline/vim-airline')
-  call dein#add('ryanoasis/vim-devicons')
   call dein#add('vim-airline/vim-airline-themes')
+  call dein#add('airblade/vim-gitgutter')
+  call dein#add('ryanoasis/vim-devicons')
   call dein#add('mhartington/oceanic-next')
   call dein#add('iCyMind/NeoSolarized')
+  call dein#add('dracula/vim')
+  call dein#add('fenetikm/falcon')
 
   call dein#end()
   call dein#save_state()
@@ -59,16 +61,14 @@ endif
 filetype plugin indent on
 syntax enable
 
-let g:oceanic_next_terminal_bold = 1
-let g:airline_theme='oceanicnext'
-let g:oceanic_next_terminal_italic = 1
+let g:falcon_lightline = 1
+let g:airline_powerline_fonts = 1
 
 let NERDTreeHijackNetrw=1
 
 imap <C-n>     <Plug>(neosnippet_expand_or_jump)
 smap <C-n>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-n>     <Plug>(neosnippet_expand_target)
-let g:airline_powerline_fonts = 1
 call neomake#configure#automake('w')
 let g:neomake_javascript_jsx_enabled_makers = ['eslint']
 " use ripreg with fzf
