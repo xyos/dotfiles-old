@@ -4,8 +4,6 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#begin(expand('~/.cache/dein'))
   call dein#add('/Users/xyos/.cache/dein/repos/github.com/Shougo/dein.vim') " Installs plugins
   call dein#add('Raimondi/delimitMate') 
-  call dein#add('roxma/nvim-completion-manager')
-  call dein#add('neomake/neomake')
   call dein#add('junegunn/fzf', { 'dir': '~/.fzf', 'build': './install --all' })
   call dein#add('junegunn/fzf.vim')
   call dein#add('junegunn/vim-easy-align')
@@ -22,10 +20,11 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('sodapopcan/vim-twiggy')
   call dein#add('tpope/vim-rhubarb')
   call dein#add('tpope/vim-dadbod')
-  call dein#add('tpope/vim-dispatch')
+  call dein#add('skywind3000/asyncrun.vim')
   call dein#add('tpope/vim-vinegar')
   call dein#add('tpope/vim-repeat')
   call dein#add('tpope/vim-surround')
+  call dein#add('w0rp/ale')
   call dein#add('tpope/vim-unimpaired')
 
   call dein#add('roxma/vim-tmux-clipboard')
@@ -36,6 +35,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('Microsoft/vscode-json-languageservice')
   call dein#add('Microsoft/vscode-css-languageservice')
   call dein#add('Microsoft/vscode-html-languageservice')
+  call dein#add('ap/vim-css-color')
   " Elixir
   call dein#add('elixir-lang/vim-elixir')
   call dein#add('slashmili/alchemist.vim')
@@ -52,6 +52,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('mhartington/oceanic-next')
   call dein#add('iCyMind/NeoSolarized')
   call dein#add('dracula/vim')
+  call dein#add('rakr/vim-one')
   call dein#add('fenetikm/falcon')
 
   call dein#end()
@@ -69,9 +70,7 @@ let NERDTreeHijackNetrw=1
 imap <C-n>     <Plug>(neosnippet_expand_or_jump)
 smap <C-n>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-n>     <Plug>(neosnippet_expand_target)
-call neomake#configure#automake('w')
-let g:neomake_javascript_jsx_enabled_makers = ['eslint']
-" use ripreg with fzf
+
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
@@ -82,6 +81,7 @@ command! -bang -nargs=* Rg
 let g:LanguageClient_serverCommands = {
     \ 'javascript.jsx': ['javascript-typescript-stdio'],
     \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['javascript-typescript-stdio'],
     \ }
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
