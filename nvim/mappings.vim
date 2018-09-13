@@ -59,6 +59,7 @@ nnoremap <Leader>p "*p
 vnoremap <Leader>p "*p
 nnoremap <Leader>f :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>a :Ag<CR>
 nnoremap ; :
 nnoremap ,; ;
 "PHP mappings

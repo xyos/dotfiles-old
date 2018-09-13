@@ -79,10 +79,6 @@ command! -bar -nargs=* -bang -complete=file Rename :
       \ endif
 
 
-let g:airline_theme='oceanicnext'
-colorscheme OceanicNext
-let g:deoplete#enable_at_startup = 1
-
 if executable("rg")
   set grepprg=rg\ --vimgrep\ --no-heading
   set grepformat=%f:%l:%c:%m,%f:%l:%m

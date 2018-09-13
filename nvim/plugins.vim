@@ -28,6 +28,8 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('tpope/vim-unimpaired')
 
   call dein#add('roxma/vim-tmux-clipboard')
+  " Autocomplete
+  call dein#add('Shougo/deoplete.nvim')
   " Language Completion
   call dein#add('autozimu/LanguageClient-neovim', {'rev' : 'next', 'build' : 'bash install.sh'})
   " JavaScript & Web
@@ -36,6 +38,7 @@ if dein#load_state(expand('~/.cache/dein'))
   call dein#add('Microsoft/vscode-css-languageservice')
   call dein#add('Microsoft/vscode-html-languageservice')
   call dein#add('ap/vim-css-color')
+  call dein#add('prettier/vim-prettier')
   " Elixir
   call dein#add('elixir-lang/vim-elixir')
   call dein#add('slashmili/alchemist.vim')
@@ -64,6 +67,8 @@ syntax enable
 
 let g:falcon_lightline = 1
 let g:airline_powerline_fonts = 1
+let g:deoplete#enable_at_startup = 1
+colorscheme dracula
 
 let NERDTreeHijackNetrw=1
 
@@ -87,3 +92,5 @@ let g:LanguageClient_serverCommands = {
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+let g:prettier#config#semi = 'true'
+let g:prettier#config#single_quote = 'true'
