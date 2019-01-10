@@ -1,7 +1,5 @@
 " Leader
 map <space> <leader>
-" Tab
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 " ------
 nnoremap Y y$
 " Remove highligh search
@@ -59,7 +57,7 @@ nnoremap <Leader>p "*p
 vnoremap <Leader>p "*p
 nnoremap <Leader>f :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>a :Ag<CR>
+nnoremap <Leader>g :Ag<CR>
 nnoremap ; :
 nnoremap ,; ;
 "PHP mappings
@@ -70,6 +68,73 @@ autocmd FileType php noremap H F$l
 if dein#tap('vim-easy-align')
   xmap ga <Plug>(EasyAlign)
   nmap ga <Plug>(EasyAlign)
+endif
+
+if dein#tap('coc.nvim')
+  inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ coc#refresh()
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+
+  " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+  " Coc only does snippet and additional edit on confirm.
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+  " Use `[c` and `]c` for navigate diagnostics
+  nmap <silent> [c <Plug>(coc-diagnostic-prev)
+  nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+  " Remap keys for gotos
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gy <Plug>(coc-type-definition)
+  nmap <silent> gi <Plug>(coc-implementation)
+  nmap <silent> gr <Plug>(coc-references)
+
+  " Use K for show documentation in preview window
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+  function! s:show_documentation()
+    if &filetype == 'vim'
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+
+  " Highlight symbol under cursor on CursorHold
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+
+  " Remap for rename current word
+  nmap <leader>rn <Plug>(coc-rename)
+
+  " Remap for format selected region
+  vmap <leader>=  <Plug>(coc-format-selected)
+  nmap <leader>=  <Plug>(coc-format-selected)
+
+  " Setup formatexpr specified filetype(s).
+  augroup mygroup
+    autocmd!
+    autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  augroup end
+
+  " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+  vmap <leader>a  <Plug>(coc-codeaction-selected)
+  nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+  " Remap for do codeAction of current line
+  nmap <leader>ac  <Plug>(coc-codeaction)
+
+  " Use `:Format` for format current buffer
+  command! -nargs=0 Format :call CocAction('format')
+
+  " Use `:Fold` for fold current buffer
+  command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 endif
 
 if exists(':tnoremap')
