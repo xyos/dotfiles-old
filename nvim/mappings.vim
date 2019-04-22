@@ -121,6 +121,8 @@ if dein#tap('coc.nvim')
   augroup mygroup
     autocmd!
     autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+    " Update signature help on jump placeholder
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   augroup end
 
   " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
@@ -129,6 +131,8 @@ if dein#tap('coc.nvim')
 
   " Remap for do codeAction of current line
   nmap <leader>ac  <Plug>(coc-codeaction)
+  " Fix autofix problem of current line
+  nmap <leader>qf  <Plug>(coc-fix-current)
 
   " Use `:Format` for format current buffer
   command! -nargs=0 Format :call CocAction('format')
@@ -147,3 +151,6 @@ if has('gui_running') || has('nvim') && exists('$DISPLAY')
 else
   noremap <silent> <Leader>y y:call system('yank > /dev/tty', @0)<Return>
 endif
+
+""""""" NERDTree
+nnoremap <Leader>n :NERDTreeToggle<CR>
