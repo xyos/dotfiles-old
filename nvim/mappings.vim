@@ -171,3 +171,6 @@ endif
 """"""" NERDTree
 nnoremap <Leader>n :NERDTreeToggle<CR>
 nnoremap <Leader>m :NERDTreeFind<CR>
+
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk<Paste>

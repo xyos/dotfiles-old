@@ -26,6 +26,7 @@ set shiftwidth=2       " Idents defaults spaces
 set tabstop=2          " Tabs defaults spaces
 set autoindent         " Autoindent on new line
 set mousehide          " Hide Cursor while typing
+set mouse=a            " Make mouse useful
 " search
 set hlsearch           " Highlights search
 set incsearch          " Shows search matches as you type
