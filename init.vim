@@ -19,9 +19,11 @@ set lazyredraw
 set synmaxcol=512
 syntax sync minlines=512
 " editting
-set cindent            " ident with spaces
 set smarttab           " Insert spaces when indenting with tab
 set smartindent        " Smart ident depending on the language
+set expandtab          " Tabs are spaces
+set shiftwidth=2       " Idents defaults spaces
+set tabstop=2          " Tabs defaults spaces
 set autoindent         " Autoindent on new line
 set mousehide          " Hide Cursor while typing
 " search
@@ -60,9 +62,7 @@ call mkdir(expand('~/.local/share/nvim/undo'),'p')
 set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
-" set incremental preview
-set inccommand=split
-" Section: Commands {{{1 ----------------------
+set inccommand=split   " set incremental preview
 " Commands for vim command Line
 "
 
@@ -77,7 +77,6 @@ command! -bar -nargs=* -bang -complete=file Rename :
       \ if v:errmsg == ""|
       \ call delete(expand("#"))|
       \ endif
-
 
 if executable("rg")
   set grepprg=rg\ --vimgrep\ --no-heading
