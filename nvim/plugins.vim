@@ -1,26 +1,27 @@
 call plug#begin('~/.local/shared/nvim/plugged')
 
-  Plug 'Raimondi/delimitMate' 
-  Plug '/usr/local/opt/fzf'
-  Plug 'junegunn/fzf.vim'
-  Plug 'junegunn/vim-easy-align' 
-  Plug 'plasticboy/vim-markdown'
-  Plug 'rhysd/clever-f.vim'
+  Plug 'tmsvg/pear-tree' " Auto add pairs to quotes, brackets, etc...
+  Plug '/usr/local/opt/fzf' " Fuzzy find everything, change to install directory
+  Plug 'junegunn/fzf.vim' " An interface to FZF
+  Plug 'junegunn/vim-easy-align' " Provides :Align <key>
+  Plug 'godlygeek/tabular' " Align text
+  Plug 'plasticboy/vim-markdown' " Markdown stuff
+  Plug 'rhysd/clever-f.vim' " f made easier
 
   " Git
-  Plug 'tpope/vim-fugitive'
-  Plug 'junegunn/gv.vim'
-  Plug 'sodapopcan/vim-twiggy'
-  Plug 'airblade/vim-gitgutter'
+  Plug 'tpope/vim-fugitive' " Git wrapper
+  Plug 'junegunn/gv.vim' " Git commit browser
+  Plug 'sodapopcan/vim-twiggy' " Git branch browser
+  Plug 'airblade/vim-gitgutter' " Git hunk indicator
 
-  " NERDTree
-  Plug 'scrooloose/nerdtree'
-  Plug 'Xuyuanp/nerdtree-git-plugin'
-  Plug 'ryanoasis/vim-devicons'
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'kristijanhusak/defx-icons'
+  Plug 'kristijanhusak/defx-git'
   """
-  Plug 'sheerun/vim-polyglot'
-  Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-dadbod'
+  Plug 'sheerun/vim-polyglot' " syntax all things
+  Plug 'tpope/vim-commentary' " press gcc for commentaries
+  Plug 'tpope/vim-unimpaired' " Pair other commands
+  " Plug 'tpope/vim-dadbod' " Database Interface for vim
   Plug 'tpope/vim-sleuth'
   Plug 'skywind3000/asyncrun.vim'
   Plug 'tpope/vim-repeat'
@@ -53,6 +54,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'dracula/vim'
   Plug 'rakr/vim-one'
   Plug 'fenetikm/falcon'
+  Plug 'ayu-theme/ayu-vim'
   " gui
   Plug 'equalsraf/neovim-gui-shim'
   " tests
@@ -67,7 +69,6 @@ syntax enable
 
 let g:airline_powerline_fonts = 1
 
-let NERDTreeHijackNetrw=1
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -121,9 +122,6 @@ let airline#extensions#coc#stl_format_warn = '%W{[%w(#%fw)]}'
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-" Hide the Nerdtree status line to avoid clutter
-let g:NERDTreeStatusline = ''
-
 " Disable vim-airline in preview mode
 let g:airline_exclude_preview = 1
 
@@ -132,3 +130,34 @@ let g:airline_powerline_fonts = 1
 
 " Enable caching of syntax highlighting groups
 let g:airline_highlighting_cache = 1
+
+
+" Git
+let g:defx_git#indicators = {
+  \ 'Modified'  : '✹',
+  \ 'Staged'    : '✚',
+  \ 'Untracked' : '✭',
+  \ 'Renamed'   : '➜',
+  \ 'Unmerged'  : '═',
+  \ 'Ignored'   : '☒',
+  \ 'Deleted'   : '✖',
+  \ 'Unknown'   : '?'
+  \ }
+let g:defx_git#column_length = 1
+let g:defx_git#show_ignored = 0
+let g:defx_git#raw_mode = 0
+" Icons
+let g:defx_icons_enable_syntax_highlight = 1
+let g:defx_icons_column_length = 2
+let g:defx_icons_directory_icon = ''
+let g:defx_icons_mark_icon = '*'
+let g:defx_icons_parent_icon = ''
+let g:defx_icons_default_icon = ''
+let g:defx_icons_directory_symlink_icon = ''
+" Options below are applicable only when using "tree" feature
+let g:defx_icons_root_opened_tree_icon = ''
+let g:defx_icons_nested_opened_tree_icon = ''
+let g:defx_icons_nested_closed_tree_icon = ''
+
+" vim-markdown
+let g:vim_markdown_folding_style_pythonic = 1
