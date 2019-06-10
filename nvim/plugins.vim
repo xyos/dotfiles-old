@@ -7,6 +7,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'godlygeek/tabular' " Align text
   Plug 'plasticboy/vim-markdown' " Markdown stuff
   Plug 'rhysd/clever-f.vim' " f made easier
+  Plug 'mbbill/undotree' " Vim undo tree
 
   " Git
   Plug 'tpope/vim-fugitive' " Git wrapper
