@@ -34,7 +34,6 @@ call plug#begin('~/.local/shared/nvim/plugged')
   " Formating 
   Plug 'sbdchd/neoformat'
   " JavaScript & Web
-  Plug 'RRethy/vim-hexokinase'
   Plug 'mattn/emmet-vim'
   " Elixir
   Plug 'elixir-lang/vim-elixir'
@@ -77,10 +76,6 @@ command! -bang -nargs=* Rg
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
-" LanguageClient 
-
-let g:prettier#config#semi = 'true'
-let g:prettier#config#single_quote = 'true'
 
 " Coc nvim
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -104,7 +99,7 @@ let g:airline_extensions = ['branch', 'hunks', 'coc']
 let g:airline_extensions = ['branch', 'hunks', 'coc']
 
 " Update section z to just have line number
-let g:airline_section_z = airline#section#create(['linenr'])
+let g:airline_section_z = airline#section#create([ '%l%\/%L%\:%v%'])
 
 " Do not draw separators for empty sections (only for the active window) >
 let g:airline_skip_empty_sections = 1
