@@ -39,6 +39,8 @@ set listchars=tab:▸\ ,eol:¬,extends:…,precedes:…
 set display+=lastline
 set scrolloff=5
 set sidescrolloff=5
+set updatetime=300
+set signcolumn=number
 " ruler
 set relativenumber     " relative number
 set number             " hibrid number"
@@ -53,6 +55,7 @@ set ttimeout
 set ttimeoutlen=50     " Make Esc work faster
 set showcmd            " Show commands as you type them
 set complete-=i        " Smart complete
+set completeopt=menuone,noselect
 set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
 set backup             " Backup files
@@ -64,6 +67,7 @@ set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
 set inccommand=split   " set incremental preview
+highlight link CompeDocumentation NormalFloat
 " Commands for vim command Line
 "
 
