@@ -5,6 +5,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'plasticboy/vim-markdown' " Markdown stuff
   Plug 'rhysd/clever-f.vim' " f made easier
   Plug 'mbbill/undotree' " Vim undo tree
+  Plug 'nvim-lua/plenary.nvim'
 
   Plug 'Raimondi/delimitMate'
   " Tmux
@@ -16,13 +17,21 @@ call plug#begin('~/.local/shared/nvim/plugged')
 
   Plug 'sheerun/vim-polyglot' " syntax all things
 
+  Plug 'neovim/nvim-lspconfig'
   Plug 'tpope/vim-commentary' " press gcc for commentaries
   Plug 'tpope/vim-sleuth'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
+  Plug 'nvim-lualine/lualine.nvim'
+  Plug 'github/copilot.vim'
+  Plug 'rmehri01/onenord.nvim', { 'branch': 'main' }
+  Plug 'jose-elias-alvarez/nvim-lsp-ts-utils', { 'branch': 'main' }
+  Plug 'catppuccin/nvim'
+  Plug 'andymass/vim-matchup'
+  Plug 'norcalli/nvim-colorizer.lua'
 
   Plug 'roxma/vim-tmux-clipboard'
-  " Formating 
+  " Formatting 
   " JavaScript & Web
   Plug 'mattn/emmet-vim'
   " Elixir
@@ -39,25 +48,37 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'equalsraf/neovim-gui-shim'
   " snippets
   " Neovim
-  Plug 'hrsh7th/nvim-compe'
-  Plug 'tzachar/compe-tabnine', { 'do': './install.sh' }
+  Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-lua/popup.nvim'
-  Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope-fzy-native.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-telescope/telescope-fzf-writer.nvim'
   Plug 'akinsho/nvim-bufferline.lua'
   Plug 'lewis6991/gitsigns.nvim'
-  Plug 'hoob3rt/lualine.nvim'
   Plug 'kyazdani42/nvim-web-devicons'
   Plug 'kyazdani42/nvim-tree.lua'
+  Plug 'folke/trouble.nvim'
+  Plug 'folke/lsp-colors.nvim'
+  Plug 'romgrk/nvim-treesitter-context'
+  Plug 'jose-elias-alvarez/null-ls.nvim', { 'branch': 'main' }
   " Language Completion
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'kabouzeid/nvim-lspinstall'
+  " main one
+  Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+  " Term
+  Plug 'voldikss/vim-floaterm'
+  " 9000+ Snippets
+  Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+  Plug 'williamboman/nvim-lsp-installer'
   Plug 'folke/tokyonight.nvim'
+  "Git
+  Plug 'TimUntersberger/neogit'
   " Format
   Plug 'mhartington/formatter.nvim'
+  " Motions
+  Plug 'David-Kunz/treesitter-unit'
+  Plug 'sindrets/diffview.nvim'
+  Plug 'ThePrimeagen/refactoring.nvim'
 call plug#end()
 
 
@@ -65,7 +86,7 @@ filetype plugin indent on
 syntax enable
 
 
-colorscheme tokyonight
+colorscheme catppuccin
 
 
 " vim-markdown
@@ -73,10 +94,18 @@ let g:vim_markdown_folding_style_pythonic = 1
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  matchup = {
+  enable = true,              -- mandatory, false will disable the whole extension
+  disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+  -- [options]
+  },
   highlight = {
     enable = true,              -- false will disable the whole extension
   },
 }
+
+require'colorizer'.setup()
+
 require('telescope').setup{
   defaults = {
     vimgrep_arguments = {
@@ -87,7 +116,6 @@ require('telescope').setup{
       '--line-number',
       '--column',
     },
-    prompt_position = "bottom",
     prompt_prefix = "> ",
     selection_caret = "> ",
     entry_prefix = "  ",
@@ -95,7 +123,7 @@ require('telescope').setup{
     selection_strategy = "reset",
     sorting_strategy = "descending",
     layout_strategy = "horizontal",
-    layout_defaults = {
+    layout_config = {
       horizontal = {
         mirror = false,
       },
@@ -106,12 +134,7 @@ require('telescope').setup{
     file_sorter =  require'telescope.sorters'.get_fzy_sorter,
     file_ignore_patterns = {},
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
-    shorten_path = true,
     winblend = 0,
-    width = 0.75,
-    preview_cutoff = 120,
-    results_height = 1,
-    results_width = 0.8,
     border = {},
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
     color_devicons = true,
@@ -143,32 +166,148 @@ require('telescope').setup{
 require('telescope').load_extension('fzy_native')
 require('telescope').load_extension('fzf_writer')
 require('bufferline').setup{}
-require('compe').setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
 
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    tabnine = true;
-  };
-}
+
+
 require('gitsigns').setup()
+
+
+local lsp = require "lspconfig"
+local coq = require "coq" -- add this
+
+vim.g.coq_settings = { auto_start = true, ["clients.tabnine.enabled"] = true }
+
+
+require'lualine'.setup {
+  options = {
+    theme = 'nord'
+  }
+}
+
+
+vim.g.mapleader = " "
+
+local neogit = require("neogit")
+
+neogit.setup {
+  disable_signs = false,
+  disable_context_highlighting = false,
+  disable_commit_confirmation = false,
+  auto_refresh = true,
+  disable_builtin_notifications = false,
+  commit_popup = {
+      kind = "split",
+  },
+  -- customize displayed signs
+  signs = {
+    -- { CLOSED, OPENED }
+    section = { ">", "v" },
+    item = { ">", "v" },
+    hunk = { "", "" },
+  },
+  integrations = {
+    diffview = true  
+  },
+  -- override/add mappings
+  mappings = {
+    -- modify status buffer mappings
+    status = {
+      -- Adds a mapping with "B" as key that does the "BranchPopup" command
+      ["B"] = "BranchPopup",
+      -- Removes the default mapping of "s"
+      ["s"] = "",
+    }
+  }
+}
+
+-- Mappings
+
+vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+
+require("trouble").setup { }
+
+-- Lua
+
+local cb = require'diffview.config'.diffview_callback
+
+require'diffview'.setup {
+  diff_binaries = false,    -- Show diffs for binaries
+  use_icons = true,          -- Requires nvim-web-devicons
+  file_panel = {
+    position = "left",      -- One of 'left', 'right', 'top', 'bottom'
+    width = 35,             -- Only applies when position is 'left' or 'right'
+    height = 10,            -- Only applies when position is 'top' or 'bottom'
+  },
+  file_history_panel = {
+    position = "bottom",
+    width = 35,
+    height = 16,
+    log_options = {
+      max_count = 256,      -- Limit the number of commits
+      follow = false,       -- Follow renames (only for single file)
+      all = false,          -- Include all refs under 'refs/' including HEAD
+      merges = false,       -- List only merge commits
+      no_merges = false,    -- List no merge commits
+      reverse = false,      -- List commits in reverse order
+    },
+  },
+  key_bindings = {
+    disable_defaults = false,                   -- Disable the default key bindings
+    -- The `view` bindings are active in the diff buffers, only when the current
+    -- tabpage is a Diffview.
+    view = {
+      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file 
+      ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
+      ["<leader>e"] = cb("focus_files"),        -- Bring focus to the files panel
+      ["<leader>b"] = cb("toggle_files"),       -- Toggle the files panel.
+    },
+    file_panel = {
+      ["j"]             = cb("next_entry"),         -- Bring the cursor to the next file entry
+      ["<down>"]        = cb("next_entry"),
+      ["k"]             = cb("prev_entry"),         -- Bring the cursor to the previous file entry.
+      ["<up>"]          = cb("prev_entry"),
+      ["<cr>"]          = cb("select_entry"),       -- Open the diff for the selected entry.
+      ["o"]             = cb("select_entry"),
+      ["<2-LeftMouse>"] = cb("select_entry"),
+      ["-"]             = cb("toggle_stage_entry"), -- Stage / unstage the selected entry.
+      ["S"]             = cb("stage_all"),          -- Stage all entries.
+      ["U"]             = cb("unstage_all"),        -- Unstage all entries.
+      ["X"]             = cb("restore_entry"),      -- Restore entry to the state on the left side.
+      ["R"]             = cb("refresh_files"),      -- Update stats and entries in the file list.
+      ["<tab>"]         = cb("select_next_entry"),
+      ["<s-tab>"]       = cb("select_prev_entry"),
+      ["<leader>e"]     = cb("focus_files"),
+      ["<leader>b"]     = cb("toggle_files"),
+    },
+    file_history_panel = {
+      ["g!"]            = cb("options"),            -- Open the option panel
+      ["<C-d>"]         = cb("open_in_diffview"),   -- Open the entry under the cursor in a diffview
+      ["zR"]            = cb("open_all_folds"),
+      ["zM"]            = cb("close_all_folds"),
+      ["j"]             = cb("next_entry"),
+      ["<down>"]        = cb("next_entry"),
+      ["k"]             = cb("prev_entry"),
+      ["<up>"]          = cb("prev_entry"),
+      ["<cr>"]          = cb("select_entry"),
+      ["o"]             = cb("select_entry"),
+      ["<2-LeftMouse>"] = cb("select_entry"),
+      ["<tab>"]         = cb("select_next_entry"),
+      ["<s-tab>"]       = cb("select_prev_entry"),
+      ["<leader>e"]     = cb("focus_files"),
+      ["<leader>b"]     = cb("toggle_files"),
+    },
+    option_panel = {
+      ["<tab>"] = cb("select"),
+      ["q"]     = cb("close"),
+    },
+  },
+}
+
+
+local lsp_installer = require("nvim-lsp-installer")
 
 -- Use an on_attach function to only map the following keys 
 -- after the language server attaches to the current buffer
@@ -185,23 +324,23 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<leader>=", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("n", "<leader>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
   end
 
   -- Set autocommands conditional on server_capabilities
@@ -228,105 +367,103 @@ local function make_config()
   }
 end
 
--- lsp-install
-local function setup_servers()
-  require'lspinstall'.setup()
+lsp_installer.on_server_ready(function(server)
+    local opts = make_config()
+    -- (optional) Customize the options passed to the server
+    -- if server.name == "tsserver" then
+    --     opts.root_dir = function() ... end
+    -- end
 
-  -- get all installed servers
-  local servers = require'lspinstall'.installed_servers()
-  -- ... and add manually installed servers
-  table.insert(servers, "clangd")
-  table.insert(servers, "sourcekit")
+    -- This setup() function is exactly the same as lspconfig's setup function.
+    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/ADVANCED_README.md
+    server:setup(opts)
+end)
 
-  for _, server in pairs(servers) do
-    local config = make_config()
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 
-    -- language specific config
-    if server == "lua" then
-      config.settings = lua_settings
-    end
-    if server == "sourcekit" then
-      config.filetypes = {"swift", "objective-c", "objective-cpp"}; -- we don't want c and cpp!
-    end
-    if server == "clangd" then
-      config.filetypes = {"c", "cpp"}; -- we don't want objective-c and objective-cpp!
-    end
-
-    if server == "angular" then
-      config.filetypes = {}; -- we don't want objective-c and objective-cpp!
-    end
-
-    require'lspconfig'[server].setup(config)
-  end
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
-setup_servers()
+require'nvim-tree'.setup()
 
-require'lualine'.setup {
-  options = {
-    icons_enabled = true,
-    theme = 'tokyonight',
-    component_separators = {'', ''},
-    section_separators = {'', ''},
-    disabled_filetypes = {}
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  extensions = {}
+
+local null_ls = require("null-ls")
+
+local sources = {
+    null_ls.builtins.formatting.prettier,
+    null_ls.builtins.formatting.stylelint,
+    null_ls.builtins.diagnostics.eslint_d,
+    null_ls.builtins.code_actions.eslint_d,
+    null_ls.builtins.code_actions.gitsigns,
+    null_ls.builtins.code_actions.refactoring,
 }
 
-local lspconfig = require"lspconfig"
+null_ls.setup({ sources = sources })
 
+local util = require 'lspconfig/util'
 
-
-require('formatter').setup({
-  logging = false,
-  filetype = {
-    javascript = {
-        -- prettier
-       function()
-          return {
-            exe = "prettier",
-            args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-            stdin = true
-          }
-        end
-    },
-    typescript = {
-        -- prettier
-       function()
-          return {
-            exe = "prettier",
-            args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-            stdin = true
-          }
-        end
-    },
-  }
-})
-
-local cmd = {"ngserver", "--stdio", "--tsProbeLocations", "/Users/xyos/.local/share/nvim/lspinstall/angular/node_modules" , "--ngProbeLocations", "/Users/xyos/.local/share/nvim/lspinstall/angular/node_modules" }
-
-require'lspconfig'.angularls.setup{
-  cmd = cmd,
-  on_new_config = function(new_config,new_root_dir)
-    new_config.cmd = cmd
-  end,
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+    properties = {
+        'documentation',
+        'detail',
+        'additionalTextEdits',
+    }
 }
+
+-- lsp.vuels.setup {
+--     on_attach = function(client)
+--         --[[
+--             Internal Vetur formatting is not supported out of the box
+-- 
+--             This line below is required if you:
+--                 - want to format using Nvim's native `vim.lsp.buf.formatting**()`
+--                 - want to use Vetur's formatting config instead, e.g, settings.vetur.format {...}
+--         --]]
+--         client.resolved_capabilities.document_formatting = true
+--         on_attach(client)
+--     end,
+--     capabilities = capabilities,
+--     settings = {
+--         vetur = {
+--             completion = {
+--                 autoImport = true,
+--                 useScaffoldSnippets = true
+--             },
+--             format = {
+--                 defaultFormatter = {
+--                     html = "none",
+--                     js = "prettier",
+--                     ts = "prettier",
+--                 }
+--             },
+--             validation = {
+--                 template = true,
+--                 script = true,
+--                 style = true,
+--                 templateProps = true,
+--                 interpolation = true
+--             },
+--             experimental = {
+--                 templateInterpolationService = true
+--             }
+--         }
+--     },
+--     root_dir = util.root_pattern("header.php", "package.json", "style.css", 'webpack.config.js')
+-- }
+
+
 
 EOF
+
+let g:coq_settings = { 'auto_start': 'shut-up' }
+call wilder#setup({'modes': [':', '/', '?']})
+
+let g:floaterm_keymap_new = '<Leader>to'
+let g:floaterm_keymap_prev = '<Leader>tp'
+let g:floaterm_keymap_next = '<Leader>tn'
+let g:floaterm_keymap_kill = '<Leader>tk'
+let g:floaterm_keymap_toggle = '<Leader>tt'

@@ -55,7 +55,8 @@ set ttimeout
 set ttimeoutlen=50     " Make Esc work faster
 set showcmd            " Show commands as you type them
 set complete-=i        " Smart complete
-set completeopt=menuone,noselect
+set completeopt=menuone,noselect,noinsert
+set shortmess+=c
 set laststatus=2       " Always show  status lines
 set fileformats=unix,dos,mac    " Fileformat according to file
 set backup             " Backup files
@@ -66,7 +67,7 @@ call mkdir(expand('~/.local/share/nvim/undo'),'p')
 set undodir=~/.local/share/nvim/undo
 set wildmode=longest:full,full  " All options to command line completion
 set wildignore+=*~,*.aux,tags,*/.git/*,*/.hg/*,*/.svn/* " ignore those files
-set inccommand=split   " set incremental preview
+set inccommand=nosplit
 highlight link CompeDocumentation NormalFloat
 " Commands for vim command Line
 "
