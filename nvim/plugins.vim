@@ -6,6 +6,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'rhysd/clever-f.vim' " f made easier
   Plug 'mbbill/undotree' " Vim undo tree
   Plug 'nvim-lua/plenary.nvim'
+  Plug 'tweekmonster/startuptime.vim'
 
   Plug 'Raimondi/delimitMate'
   " Tmux
@@ -46,6 +47,7 @@ call plug#begin('~/.local/shared/nvim/plugged')
   Plug 'dracula/vim'
   " gui
   Plug 'equalsraf/neovim-gui-shim'
+  Plug 'j-hui/fidget.nvim'
   " snippets
   " Neovim
   Plug 'gelguy/wilder.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -317,6 +319,20 @@ local on_attach = function(client, bufnr)
 
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
+  if client.name == "tsserver" then
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+    client.resolved_capabilities.rename = false
+    local ts_utils = require("nvim-lsp-ts-utils")
+    ts_utils.setup({})
+    ts_utils.setup_client(client)
+    local opts = { noremap=true, silent=true }
+    buf_set_keymap('n', '<leader>or', '<cmd>TSLspOrganize<CR>', opts)
+    buf_set_keymap('n', '<leader>rf', '<cmd>TSLspRenameFile<CR>', opts)
+    buf_set_keymap('n', '<leader>ia', '<cmd>TSLspImportAll<CR>', opts)
+
+  end
+
   -- Mappings.
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -328,7 +344,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
@@ -341,6 +356,10 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   elseif client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+  end
+
+  if client.resolved_capabilities.rename then
+    buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   end
 
   -- Set autocommands conditional on server_capabilities
@@ -370,9 +389,9 @@ end
 lsp_installer.on_server_ready(function(server)
     local opts = make_config()
     -- (optional) Customize the options passed to the server
-    -- if server.name == "tsserver" then
-    --     opts.root_dir = function() ... end
-    -- end
+    if server.name == "tsserver" then
+        opts.init_options = require("nvim-lsp-ts-utils").init_options
+    end
 
     -- This setup() function is exactly the same as lspconfig's setup function.
     -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/ADVANCED_README.md
@@ -404,58 +423,52 @@ null_ls.setup({ sources = sources })
 
 local util = require 'lspconfig/util'
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-    properties = {
-        'documentation',
-        'detail',
-        'additionalTextEdits',
-    }
-}
+require"fidget".setup{}
 
--- lsp.vuels.setup {
---     on_attach = function(client)
---         --[[
---             Internal Vetur formatting is not supported out of the box
--- 
---             This line below is required if you:
---                 - want to format using Nvim's native `vim.lsp.buf.formatting**()`
---                 - want to use Vetur's formatting config instead, e.g, settings.vetur.format {...}
---         --]]
---         client.resolved_capabilities.document_formatting = true
---         on_attach(client)
---     end,
---     capabilities = capabilities,
---     settings = {
---         vetur = {
---             completion = {
---                 autoImport = true,
---                 useScaffoldSnippets = true
---             },
---             format = {
---                 defaultFormatter = {
---                     html = "none",
---                     js = "prettier",
---                     ts = "prettier",
---                 }
---             },
---             validation = {
---                 template = true,
---                 script = true,
---                 style = true,
---                 templateProps = true,
---                 interpolation = true
---             },
---             experimental = {
---                 templateInterpolationService = true
---             }
---         }
---     },
---     root_dir = util.root_pattern("header.php", "package.json", "style.css", 'webpack.config.js')
--- }
-
-
+require('formatter').setup({
+  filetype = {
+    javascript = {
+      -- prettier
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+          stdin = true
+        }
+      end
+    },
+    json = {
+      -- prettier
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--double-quote'},
+          stdin = true
+        }
+      end
+    },
+    html = {
+      -- prettier
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--parser', 'angular'},
+          stdin = true
+        }
+      end
+    },
+    typescript = {
+      -- prettier
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+          stdin = true
+        }
+      end
+    },
+  }
+})
 
 EOF
 
@@ -467,3 +480,5 @@ let g:floaterm_keymap_prev = '<Leader>tp'
 let g:floaterm_keymap_next = '<Leader>tn'
 let g:floaterm_keymap_kill = '<Leader>tk'
 let g:floaterm_keymap_toggle = '<Leader>tt'
+
+nnoremap <silent> <leader>= :Format<CR>
