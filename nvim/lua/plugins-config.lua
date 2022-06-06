@@ -1,8 +1,17 @@
+-- null-ls
+require("null-ls").setup({
+  sources = {
+    -- require("null-ls").builtins.diagnostics.eslint,
+    -- require("null-ls").builtins.code_actions.eslint,
+    require("null-ls").builtins.formatting.prettier,
+  },
+})
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
   ensure_installed = "all",
 
+  ignore_install = { "phpdoc", "tree-sitter-phpdoc" },
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
 
@@ -150,6 +159,16 @@ require('formatter').setup({
         }
       end
     },
+    vue = {
+      -- prettier
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+          stdin = true
+        }
+      end
+    },
   }
 })
 --- }}}
@@ -232,9 +251,9 @@ local on_attach = function(client, bufnr)
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   if client.name == "tsserver" then
-    client.resolved_capabilities.document_formatting = false
-    client.resolved_capabilities.document_range_formatting = false
-    client.resolved_capabilities.rename = false
+    client.server_capabilities.document_formatting = false
+    client.server_capabilities.document_range_formatting = false
+    client.server_capabilities.rename = true
     local ts_utils = require("nvim-lsp-ts-utils")
     ts_utils.setup({})
     ts_utils.setup_client(client)
@@ -242,7 +261,6 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '<leader>or', '<cmd>TSLspOrganize<CR>', opts)
     buf_set_keymap('n', '<leader>rf', '<cmd>TSLspRenameFile<CR>', opts)
     buf_set_keymap('n', '<leader>ia', '<cmd>TSLspImportAll<CR>', opts)
-
   end
 
   -- Mappings.
@@ -258,24 +276,24 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.setloclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
+  if client.server_capabilities.document_formatting then
     buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.resolved_capabilities.document_range_formatting then
+  elseif client.server_capabilities.document_range_formatting then
     buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
   end
 
-  if client.resolved_capabilities.rename then
+  if client.server_capabilities.rename then
     buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   end
 
   -- Set autocommands conditional on server_capabilities
-  if client.resolved_capabilities.document_highlight then
+  if client.server_capabilities.document_highlight then
     vim.api.nvim_exec([[
     augroup lsp_document_highlight
     autocmd! * <buffer>
@@ -301,10 +319,6 @@ end
 lsp_installer.on_server_ready(function(server)
     local opts = make_config()
     -- (optional) Customize the options passed to the server
-    if server.name == "tsserver" then
-        opts.init_options = require("nvim-lsp-ts-utils").init_options
-    end
-
     -- This setup() function is exactly the same as lspconfig's setup function.
     -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/ADVANCED_README.md
     server:setup(opts)

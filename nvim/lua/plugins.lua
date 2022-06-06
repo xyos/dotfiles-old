@@ -37,6 +37,12 @@ return require('packer').startup(function()
     'j-hui/fidget.nvim',
     config = function() require('fidget').setup() end
   }
+  -- Trouble
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function() require("trouble").setup { } end
+  }
   -- Autocomplete
   use 'github/copilot.vim'
 

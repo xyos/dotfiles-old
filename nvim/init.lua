@@ -95,4 +95,11 @@ map("n", "<leader>g", ":Telescope live_grep<cr>")
 map("n", "<leader>b", ":Telescope buffers<cr>")
 map("n", "<leader>h", ":Telescope help_tags<cr>")
 
+map("n", "<leader>xx", ":Trouble<cr>", silent)
+map("n", "<leader>xw", ":Trouble workspace_diagnostics<cr>", silent)
+map("n", "<leader>xd", ":Trouble document_diagnostics<cr>", silent)
+map("n", "<leader>xl", ":Trouble loclist<cr>", silent)
+map("n", "<leader>xq", ":Trouble quickfix<cr>", silent)
+map("n", "gR", ":Trouble lsp_references<cr>", silent)
+
 -- }}}
