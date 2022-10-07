@@ -29,6 +29,10 @@ vim.opt.shell = '/bin/bash'
 vim.opt.showbreak = '↪'
 opt.list = true
 
+vim.opt.completeopt:append("menuone")
+vim.opt.completeopt:append("noselect")
+vim.opt.completeopt:remove("preview")
+
 vim.wo.linebreak = true
 vim.wo.breakindent = true
 

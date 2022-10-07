@@ -15,6 +15,11 @@ require'nvim-treesitter.configs'.setup {
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
 
+  -- use matchUp
+  matchup = {
+    enable = true,
+  },
+
   highlight = {
     -- `false` will disable the whole extension
     enable = true,
@@ -31,39 +36,55 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 --- {{{ [[ Catppuccin ]]
-local catppuccin = require'catppuccin'
-catppuccin.setup({
+require("catppuccin").setup({
+  dim_inactive = {
+    enabled = false,
+    shade = "dark",
+    percentage = 0.15,
+  },
   transparent_background = false,
   term_colors = false,
+  compile = {
+    enabled = false,
+    path = vim.fn.stdpath "cache" .. "/catppuccin",
+  },
   styles = {
-    comments = "italic",
-    functions = "italic",
-    keywords = "italic",
-    strings = "NONE",
-    variables = "italic",
+    comments = { "italic" },
+    conditionals = { "italic" },
+    loops = {},
+    functions = {},
+    keywords = {},
+    strings = {},
+    variables = {},
+    numbers = {},
+    booleans = {},
+    properties = {},
+    types = {},
+    operators = {},
   },
   integrations = {
     treesitter = true,
     native_lsp = {
       enabled = true,
       virtual_text = {
-        errors = "italic",
-        hints = "italic",
-        warnings = "italic",
-        information = "italic",
+	errors = { "italic" },
+	hints = { "italic" },
+	warnings = { "italic" },
+	information = { "italic" },
       },
       underlines = {
-        errors = "underline",
-        hints = "underline",
-        warnings = "underline",
-        information = "underline",
+	errors = { "underline" },
+	hints = { "underline" },
+	warnings = { "underline" },
+	information = { "underline" },
       },
     },
-    lsp_trouble = false,
+    lsp_trouble = true,
     cmp = true,
     lsp_saga = false,
     gitgutter = false,
     gitsigns = true,
+    leap = false,
     telescope = true,
     nvimtree = {
       enabled = false,
@@ -75,10 +96,14 @@ catppuccin.setup({
       show_root = true,
       transparent_panel = false,
     },
+    dap = {
+      enabled = false,
+      enable_ui = false,
+    },
     which_key = false,
     indent_blankline = {
       enabled = true,
-      colored_indent_levels = true,
+      colored_indent_levels = false,
     },
     dashboard = true,
     neogit = true,
@@ -88,14 +113,19 @@ catppuccin.setup({
     bufferline = true,
     markdown = true,
     lightspeed = false,
-    ts_rainbow = false,
+    ts_rainbow = tre,
     hop = false,
     notify = true,
     telekasten = true,
     symbols_outline = true,
-  }
-}
-)
+    mini = false,
+    aerial = false,
+    vimwiki = true,
+    beacon = true,
+  },
+  color_overrides = {},
+  custom_highlights = {},
+})
 --- }}}
 
 require'lualine'.setup {
@@ -110,8 +140,8 @@ vim.opt.listchars:append("space:⋅")
 vim.opt.listchars:append("eol:↴")
 
 require("indent_blankline").setup {
-    space_char_blankline = " ",
-    show_current_context = true,
+  space_char_blankline = " ",
+  show_current_context = true,
 }
 
 --- }}}
@@ -122,51 +152,51 @@ require('formatter').setup({
     javascript = {
       -- prettier
       function()
-        return {
-          exe = "prettier",
-          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
-          stdin = true
-        }
+	return {
+	  exe = "prettier",
+	  args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+	  stdin = true
+	}
       end
     },
     json = {
       -- prettier
       function()
-        return {
-          exe = "prettier",
-          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--double-quote'},
-          stdin = true
-        }
+	return {
+	  exe = "prettier",
+	  args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--double-quote'},
+	  stdin = true
+	}
       end
     },
     html = {
       -- prettier
       function()
-        return {
-          exe = "prettier",
-          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--parser', 'angular'},
-          stdin = true
-        }
+	return {
+	  exe = "prettier",
+	  args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--parser', 'angular'},
+	  stdin = true
+	}
       end
     },
     typescript = {
       -- prettier
       function()
-        return {
-          exe = "prettier",
-          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
-          stdin = true
-        }
+	return {
+	  exe = "prettier",
+	  args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
+	  stdin = true
+	}
       end
     },
     vue = {
       -- prettier
       function()
-        return {
-          exe = "prettier",
-          args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--single-quote'},
-          stdin = true
-        }
+	return {
+	  exe = "prettier-eslint",
+	  args = {"--stdin-filepath", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)), '--stdin --single-quote --trailing-comma=all semi=true'},
+	  stdin = true
+	}
       end
     },
   }
@@ -195,10 +225,10 @@ require('telescope').setup{
     layout_strategy = "horizontal",
     layout_config = {
       horizontal = {
-        mirror = false,
+	mirror = false,
       },
       vertical = {
-        mirror = false,
+	mirror = false,
       },
     },
     file_sorter =  require'telescope.sorters'.get_fzy_sorter,
@@ -230,7 +260,7 @@ require('telescope').setup{
       -- Will probably slow down some aspects of the sorter, but can make color highlights.
       -- I will work on this more later.
       use_highlighter = false,
-  }
+    }
   }
 }
 require('telescope').load_extension('fzy_native')
@@ -306,7 +336,7 @@ end
 
 -- config that activates keymaps and enables snippet support
 local function make_config()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
   capabilities.textDocument.completion.completionItem.snippetSupport = true
   return {
     -- enable snippet support
@@ -317,11 +347,11 @@ local function make_config()
 end
 
 lsp_installer.on_server_ready(function(server)
-    local opts = make_config()
-    -- (optional) Customize the options passed to the server
-    -- This setup() function is exactly the same as lspconfig's setup function.
-    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/ADVANCED_README.md
-    server:setup(opts)
+  local opts = make_config()
+  -- (optional) Customize the options passed to the server
+  -- This setup() function is exactly the same as lspconfig's setup function.
+  -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/ADVANCED_README.md
+  server:setup(opts)
 end)
 
 --- }}}
@@ -376,17 +406,17 @@ require("neo-tree").setup({
     },
     git_status = {
       symbols = {
-        -- Change type
-        added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
-        modified  = "", -- or "", but this is redundant info if you use git_status_colors on the name
-        deleted   = "✖",-- this can only be used in the git_status source
-        renamed   = "",-- this can only be used in the git_status source
-        -- Status type
-        untracked = "",
-        ignored   = "",
-        unstaged  = "",
-        staged    = "",
-        conflict  = "",
+	-- Change type
+	added     = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
+	modified  = "", -- or "", but this is redundant info if you use git_status_colors on the name
+	deleted   = "✖",-- this can only be used in the git_status source
+	renamed   = "",-- this can only be used in the git_status source
+	-- Status type
+	untracked = "",
+	ignored   = "",
+	unstaged  = "",
+	staged    = "",
+	conflict  = "",
       }
     },
   },
@@ -399,8 +429,8 @@ require("neo-tree").setup({
     },
     mappings = {
       ["<space>"] = { 
-        "toggle_node", 
-        nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use 
+	"toggle_node", 
+	nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use 
       },
       ["<2-LeftMouse>"] = "open",
       ["<cr>"] = "open",
@@ -429,45 +459,45 @@ require("neo-tree").setup({
       hide_dotfiles = true,
       hide_gitignored = true,
       hide_by_name = {
-        ".DS_Store",
-        "thumbs.db"
-        --"node_modules"
+	".DS_Store",
+	"thumbs.db"
+	--"node_modules"
       },
       hide_by_pattern = { -- uses glob style patterns
       --"*.meta"
-      },
-      never_show = { -- remains hidden even if visible is toggled to true
-      --".DS_Store",
-      --"thumbs.db"
-      },
     },
-    follow_current_file = true, -- This will find and focus the file in the active buffer every
-    -- time the current file is changed while the tree is open.
-    hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
-    -- in whatever position is specified in window.position
-    -- "open_current",  -- netrw disabled, opening a directory opens within the
-    -- window like netrw would, regardless of window.position
-    -- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
-    use_libuv_file_watcher = true, -- This will use the OS level file watchers to detect changes
-    -- instead of relying on nvim autocmd events.
-    window = {
-      mappings = {
-        ["<bs>"] = "navigate_up",
-        ["."] = "set_root",
-        ["H"] = "toggle_hidden",
-        ["/"] = "fuzzy_finder",
-        ["f"] = "filter_on_submit",
-        ["<c-x>"] = "clear_filter",
-      }
-    }
+    never_show = { -- remains hidden even if visible is toggled to true
+    --".DS_Store",
+    --"thumbs.db"
+  },
+},
+follow_current_file = true, -- This will find and focus the file in the active buffer every
+-- time the current file is changed while the tree is open.
+hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
+-- in whatever position is specified in window.position
+-- "open_current",  -- netrw disabled, opening a directory opens within the
+-- window like netrw would, regardless of window.position
+-- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
+use_libuv_file_watcher = true, -- This will use the OS level file watchers to detect changes
+-- instead of relying on nvim autocmd events.
+window = {
+  mappings = {
+    ["<bs>"] = "navigate_up",
+    ["."] = "set_root",
+    ["H"] = "toggle_hidden",
+    ["/"] = "fuzzy_finder",
+    ["f"] = "filter_on_submit",
+    ["<c-x>"] = "clear_filter",
+  }
+}
   },
   buffers = {
     show_unloaded = true,
     window = {
       mappings = {
-        ["bd"] = "buffer_delete",
-        ["<bs>"] = "navigate_up",
-        ["."] = "set_root",
+	["bd"] = "buffer_delete",
+	["<bs>"] = "navigate_up",
+	["."] = "set_root",
       }
     },
   },
@@ -475,16 +505,96 @@ require("neo-tree").setup({
     window = {
       position = "float",
       mappings = {
-        ["A"]  = "git_add_all",
-        ["gu"] = "git_unstage_file",
-        ["ga"] = "git_add_file",
-        ["gr"] = "git_revert_file",
-        ["gc"] = "git_commit",
-        ["gp"] = "git_push",
-        ["gg"] = "git_commit_and_push",
+	["A"]  = "git_add_all",
+	["gu"] = "git_unstage_file",
+	["ga"] = "git_add_file",
+	["gr"] = "git_revert_file",
+	["gc"] = "git_commit",
+	["gp"] = "git_push",
+	["gg"] = "git_commit_and_push",
       }
     }
   }
 })
 
 --- }}}
+---{{{ [nvim-cmp]
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+      -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+    end,
+  },
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' }, -- For vsnip users.
+    -- { name = 'luasnip' }, -- For luasnip users.
+    -- { name = 'ultisnips' }, -- For ultisnips users.
+    -- { name = 'snippy' }, -- For snippy users.
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- Set configuration for specific filetype.
+cmp.setup.filetype('gitcommit', {
+  sources = cmp.config.sources({
+    { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+--- }}}
+require "nvim-treesitter.configs".setup {
+  tree_docs = {enable = true},
+  refactor = {
+    highlight_current_scope = { enable = true },
+    smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+    highlight_definitions = {
+      enable = true,
+      -- Set to false if you have an `updatetime` of ~100.
+      clear_on_cursor_move = true,
+    },
+  },
+}
